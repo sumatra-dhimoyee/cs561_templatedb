@@ -104,6 +104,9 @@ void Build_Block<K, V>::print_block()
 template<typename K,typename V>
 int Build_Block<K, V>::add_to_block(Block<K,V>& block, std::vector<Entry<K,V> > _data)
 {
+    //need to enure it is sorted after adding
+    //not incorporated yet
+    //have to implement merge sort
     int ret = 0;
    
     for (int i = 0; i <  _data.size(); i++)
@@ -130,4 +133,10 @@ int Build_Block<K, V>::add_to_block(Block<K,V>& block, std::vector<Entry<K,V> > 
     return ret;
 
 }
+template<typename K, typename V>
+size_t Build_Block<K,V> ::current_size()
+{
+    return this->size;
+}
+
 

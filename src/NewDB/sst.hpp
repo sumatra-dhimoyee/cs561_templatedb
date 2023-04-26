@@ -15,32 +15,44 @@ namespace templatedb
     template<typename K, typename V>
     class SST
     {
-        std::vector<Block<K,V>> data;
+        std::vector<Block<K,V>> block_vector;
         size_t offset;
-        int run;
-        int level;
+        uint8_t run;
+        uint8_t level;
+        size_t max_size;
+        //Add member bloom filter later on
+        SST(std::vector<Block<K,V>> _block_vector, size_t _offset, uint8_t _run, uint8_t _level , size_t _max_size)
+        {
+            block_vector = _block_vector;
+            _offset = offset;
+            _run = run;
+            _level = level;
+            _max_size = max_size;
+        }
 
-    }
+    };
 
     template<typename K,typename V>
     class Build_SST
     {
         private:
-            std::vector<Block<K,V>> data;
-            size_t size;
-            int run;
-            int level;
+            std::vector<Block<K,V>> block_vector;
+            size_t offset;
+            uint8_t run;
+            uint8_t level;
+            size_t num_extra_index;
             //Add member bloom filter later on
         public:
-        Build_SST(std::vector<K>& keys, std::vector<std::vector<V> values);
-        bool add_KV_list(std::vector<K>& keys, std::vector<std::vector<V> values);
-        static int add_flush(SST<K,V> sst, std::vector<K>& keys, std::vector<std::vector<V> values );
-        void print_sst();
+        Build_SST(std::vector<Entry<K,V>> _data,size_t max_size, uint8_t _run, uint8_t level);
+        // bool add_KV_list(std::vector<K>& keys, std::vector<std::vector<V> values);
+        bool merge_flush(SST<K,V>& second_sst);
+
+        // void print_sst();
         SST<K,V> build();
 
 
 
-    }
+    };
 }
 
 

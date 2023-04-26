@@ -30,10 +30,7 @@ namespace templatedb
                 value = _value;
                 tomb = _tomb;
                 TS = _TS;
-            }
-
-
-            
+            }   
     };
 
     template<typename K,typename V>
@@ -71,6 +68,7 @@ namespace templatedb
         static int add_to_block(Block<K,V>& block, std::vector<Entry<K,V> > _data);
         //bool add_KV_list(std::vector<K,vector<V>> kv_pairs);
         bool check_size(Entry<K,V>& entry);
+        size_t current_size();
         int enteries_kept_size();
         void print_block();
         Block<K,V> build();
