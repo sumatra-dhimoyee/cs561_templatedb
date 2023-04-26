@@ -14,37 +14,26 @@
 using namespace templatedb;
 using namespace std;
 
-template<typename K, typename V>
-    class Entry
-    {
-        public:
-            K key;
-            std::vector<V> value;
-            bool tomb;
-            std::chrono::time_point<std::chrono::system_clock> TS;
-            Entry(K _key, std::vector<V> _value, bool _tomb, std::chrono::time_point<std::chrono::system_clock> _TS)
-            {
-                key = _key;
-                value = _value;
-                tomb = _tomb;
-                TS = _TS;
-            }
 
-
-            
-    };
-
-class MemTable {
+class MemCache {
 private:   
-    vector<Entry> memtable;
+    vector<Entry> memcache;
+    size_t BUFFER_SIZE= 8*1024*1024;
 
 public:
     void put(K key, V value){
-        memtable.push_back(Entry(key, vector<V> val(value), false, system_clock::now()));
+        if (memcache.size()<BUFFER_SIZE){
+            memcache.push_back(Entry(key, vector<V> val(value), false, system_clock::now()));
+        }
+        else{
+            flush();
+            memcache.push_back(Entry(key, vector<V> val(value), false, system_clock::now()));
+        }
+        
     }
 
     vector<Entry>& get_entry(K key) {
-        for (auto& entry: memtable){
+        for (auto& entry : memcache){
             if (entry.key == key){
                 return entry.val[0];
             }
@@ -52,13 +41,39 @@ public:
     }
 
     bool empty() {
-        mem
+        return memcache.empty()
     }
     
+    vector<Entry>& get_memcache(){
+        return memcache;
+    }
+
+    struct
+    {
+        bool operator()(Entry a, Entry b) const { return a.key < b.key; }
+    }
+    entry_compare;
+
+    void sort(){
+        std::sort(memcache.begin(), data.end(), entry_compare);
+    }
+
+    vector<K>& build_key_vector(){
+        vector<K> keys;
+        for (auto& entry : memcache){
+            keys.push_back(entry.key);
+        }
+        return keys;
+    }
+
+    vector<V>& build_value_vector(){
+        vector<V> values;
+        for (auto& entry: memcache){
+            values.push_back(entry.value[0]);
+        }
+        return values;
+    }
 }
-
-
-
 
 
 
