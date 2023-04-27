@@ -20,14 +20,17 @@ namespace templatedb
         uint8_t run;
         uint8_t level;
         size_t max_size;
+        bool overflow;
         //Add member bloom filter later on
-        SST(std::vector<Block<K,V>> _block_vector, size_t _offset, uint8_t _run, uint8_t _level , size_t _max_size)
+        SST(std::vector<Block<K,V>> _block_vector, size_t _offset, uint8_t _run, uint8_t _level , size_t _max_size, bool _overflow)
         {
             block_vector = _block_vector;
-            _offset = offset;
-            _run = run;
-            _level = level;
-            _max_size = max_size;
+            offset = _offset;
+            run = _run;
+            level = _level;
+            max_size = _max_size;
+            overflow = _overflow;
+
         }
 
     };
@@ -37,13 +40,14 @@ namespace templatedb
     {
         private:
             std::vector<Block<K,V>> block_vector;
-            size_t offset;
+            size_t size;
             uint8_t run;
             uint8_t level;
-            size_t num_extra_index;
+            size_t max_size;
+            bool overflow;
             //Add member bloom filter later on
         public:
-        Build_SST(std::vector<Entry<K,V>> _data,size_t max_size, uint8_t _run, uint8_t level);
+        Build_SST(std::vector<Entry<K,V>> _data,size_t max_size, uint8_t _run, uint8_t level, bool overflow);
         // bool add_KV_list(std::vector<K>& keys, std::vector<std::vector<V> values);
         bool merge_flush(SST<K,V>& second_sst);
 
