@@ -14,25 +14,33 @@ using namespace std;
 
 template<typename K, typename V>
 class MemCache {
-private:   
-    vector<Entry<K,V>> _memcache;
-    size_t _bufferSize;
+    private:   
+        vector<Entry<K,V>> memcache;
+        size_t maxBufferSize;
+        size_t bufferSize;
 
-public:
-    MemCache(size_t bufferSize, vector<Entry> memcache){
-        _bufferSize= bufferSize* 1024* 1024;
-        _memcache=memcache;
 
-    }
-    void put(K key, V value);
-    void update(K key, V value);
-    void delete(K key);
-    vector<Entry<K,V>>& get_entry(K key);
-    bool empty();
-    vector<Entry<K,V>>& get_memcache();
-    void sort();
-    vector<K>& build_key_vector();
-    vector<V>& build_value_vector();
+    public:
+        MemCache(size_t _bufferSize, vector<Entry<K, V> _memcache){
+            memcache=_memcache;
+            maxBufferSize=_bufferSize;
+            bufferSize=0;
+            
+        }
+        bool put(K key, std::vector<V> value);
+        Entry<K,V>& getEntry(K key);
+        bool updateEntry(K key, std::vector<V> value);
+        bool deleteEntry(K key);
+        bool readRange(K startKey, K endKey);
+        bool deleteRange(K startKey, K endKey);
+        bool compareEntries (Entry<K,V> i,Entry<K,V> j);
+        void sort();
+        vector<Entry<K,V>>& getMemcache();
+        int getBufferSize();
+        bool isEmpty();
+        vector<K>& buildKeyVector();
+        vector<vector<V>>& buildValueVector();
+        vector<V>& buildIntValueVector();
 
 };
 
