@@ -20,15 +20,16 @@ namespace templatedb
     {
         private:
         std::vector<SST<K,V> sst_vector;
-        int no_runs;
+        uint8_t no_runs;
         size_t run_size;
+        size_t level_size;
         uint8_t level;
     
         public:
 
-        Level(std::vector<SST<K,V>> _sst_vector, int _no_runs, size_t _run_size, uint8_t _level);
-        bool add_sst(std::vector<Entry<K,V>>, uint8_t level);
-        SST<K,V> merge_sst(SST<K,V> first_sst, SST<K,V> second sst);
+        Level(std::vector<Entry<K,V>> _sst_vector, int _no_runs, size_t _run_size, size_t _level_size, uint8_t level);
+        bool add_sst(std::vector<Entry<K,V>>, bool merge);
+        SST<K,V> merge_runs();
 
 
 
