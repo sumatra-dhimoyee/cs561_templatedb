@@ -6,10 +6,10 @@ using namespace templatedb;
 
 
 template<typename K,typename V>
-Build_SST<K,V> ::Build_SST(std::vector<Entry<K,V>> _data, size_t _max_size, uint8_t _run, uint8_t _level, bool _overflow)
+Build_SST<K,V> ::Build_SST(std::vector<Entry<K,V>> _data, size_t _max_size, uint8_t _level, bool _overflow)
 {
     this->max_size = _max_size;
-    this->run = _run;
+    // this->run = _run;
     this->level = _level;
     this->size = sizeof(size_t) +sizeof(uint8_t) +sizeof(uint8_t);
     this->overflow = _overflow;
@@ -22,7 +22,7 @@ Build_SST<K,V> ::Build_SST(std::vector<Entry<K,V>> _data, size_t _max_size, uint
     
     _data.erase(_data.begin(), _data.begin() + kept_entries);
 
-    Build_Block <K,V> builder = Build_Block<K,V>(_data);
+    Build_Block<K,V> builder = Build_Block<K,V>(_data);
    
     kept_entries = builder.enteries_kept_size();
     if(this->size + builder.current_size() > this->max_size)
@@ -113,12 +113,12 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
 }
 
 template<typename K, typename V>
-SST<K,V> Build_SST<K,V>::merge_flush(SST<K,V>& first_sst, SST<K,V>& second_sst)
+SST<K,V> Build_SST<K,V>::merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst)
 {
 
     std::vector<Entry<K,V>> merged_entries = merge_sorted_vectors(first_sst.block_vector, second_sst.block_vector);
 
-    Build_SST<K,V> sst_builder = Build_SST(merged_entries, first_sst.max_size, first_sst.run, first_sst.level, false);
+    Build_SST<K,V> sst_builder = Build_SST(merged_entries, first_sst.max_size,  first_sst.level, false);
     SST<K,V> sst = sst_builder.build();
     for (int i = 0; i < sst_builder.block_vector.size();i++)
     {
@@ -128,10 +128,12 @@ SST<K,V> Build_SST<K,V>::merge_flush(SST<K,V>& first_sst, SST<K,V>& second_sst)
      
 }  
 
+
+
 template<typename K, typename V>
 SST<K,V> Build_SST<K,V>::build()
 {
-    SST<K,V> sst = SST<K,V>(this->block_vector, this->size, this->run, this->level, this->max_size, this->overflow);
+    SST<K,V> sst = SST<K,V>(this->block_vector, this->size,  this->level, this->max_size, this->overflow);
     return sst;
 }
 

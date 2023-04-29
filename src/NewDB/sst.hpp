@@ -18,16 +18,16 @@ namespace templatedb
         public:
         std::vector<Block<K,V>> block_vector;
         size_t offset;
-        uint8_t run;
+        // uint8_t run;
         uint8_t level;
         size_t max_size;
         bool overflow;
         //Add member bloom filter later on
-        SST(std::vector<Block<K,V>> _block_vector, size_t _offset, uint8_t _run, uint8_t _level , size_t _max_size, bool _overflow)
+        SST(std::vector<Block<K,V>> _block_vector, size_t _offset, uint8_t _level , size_t _max_size, bool _overflow)
         {
             block_vector = _block_vector;
             offset = _offset;
-            run = _run;
+            // run = _run;
             level = _level;
             max_size = _max_size;
             overflow = _overflow;
@@ -43,15 +43,15 @@ namespace templatedb
         public:
             std::vector<Block<K,V>> block_vector;
             size_t size;
-            uint8_t run;
+            // uint8_t run;
             uint8_t level;
             size_t max_size;
             bool overflow;
             //Add member bloom filter later on
        
-        Build_SST(std::vector<Entry<K,V>> _data,size_t _max_size, uint8_t _run, uint8_t _level, bool _overflow = false);
+        Build_SST(std::vector<Entry<K,V>> _data,size_t _max_size, uint8_t _level, bool _overflow = false);
         // bool add_KV_list(std::vector<K>& keys, std::vector<std::vector<V> values);
-        static SST<K,V> merge_flush(SST<K,V>& first_sst, SST<K,V>& second_sst);
+        static SST<K,V> merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst);
         
         // void print_sst();
         SST<K,V> build();
