@@ -27,7 +27,7 @@ namespace templatedb
     
         public:
 
-        Level(std::vector<Entry<K,V>> _sst_vector, int _no_runs, size_t _run_size, size_t _level_size, uint8_t level);
+        Level(std::vector<Entry<K,V>> _sst_vector, int _no_runs, size_t _level_size, uint8_t level);
         bool add_sst(std::vector<Entry<K,V>>, bool merge);
         SST<K,V> merge_runs();
 
