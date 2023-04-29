@@ -8,10 +8,13 @@
 #include <sstream>
 #include <unordered_map>
 #include <vector>
+#include "memcache.hpp"
 #include "block.hpp"
 #include "sst.hpp"
-#include "memcache.cpp"
 
+class Operations{
+
+};
 
 
 #endif

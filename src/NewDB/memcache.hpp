@@ -4,7 +4,6 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
-#include "memcache.hpp"
 #include "sst.hpp"
 #include "block.hpp"
 
@@ -13,10 +12,10 @@
 using namespace templatedb;
 using namespace std;
 
-
+template<typename K, typename V>
 class MemCache {
 private:   
-    vector<Entry> _memcache;
+    vector<Entry<K,V>> _memcache;
     size_t _bufferSize;
 
 public:
@@ -26,9 +25,11 @@ public:
 
     }
     void put(K key, V value);
-    vector<Entry>& get_entry(K key);
+    void update(K key, V value);
+    void delete(K key);
+    vector<Entry<K,V>>& get_entry(K key);
     bool empty();
-    vector<Entry>& get_memcache();
+    vector<Entry<K,V>>& get_memcache();
     void sort();
     vector<K>& build_key_vector();
     vector<V>& build_value_vector();
