@@ -22,7 +22,7 @@ Build_SST<K,V> ::Build_SST(std::vector<Entry<K,V>> _data, size_t _max_size, uint
     
     _data.erase(_data.begin(), _data.begin() + kept_entries);
 
-    Build_Block <K,V> builder = Build_Block<K,V>(_data);
+    Build_Block<K,V> builder = Build_Block<K,V>(_data);
    
     kept_entries = builder.enteries_kept_size();
     if(this->size + builder.current_size() > this->max_size)
@@ -113,7 +113,7 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
 }
 
 template<typename K, typename V>
-SST<K,V> Build_SST<K,V>::merge_flush(SST<K,V>& first_sst, SST<K,V>& second_sst)
+SST<K,V> Build_SST<K,V>::merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst)
 {
 
     std::vector<Entry<K,V>> merged_entries = merge_sorted_vectors(first_sst.block_vector, second_sst.block_vector);
@@ -127,6 +127,8 @@ SST<K,V> Build_SST<K,V>::merge_flush(SST<K,V>& first_sst, SST<K,V>& second_sst)
     return sst;
      
 }  
+
+
 
 template<typename K, typename V>
 SST<K,V> Build_SST<K,V>::build()

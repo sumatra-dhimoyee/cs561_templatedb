@@ -10,7 +10,7 @@
 #include <vector>
 #include "sst.hpp"
 
-#define LEVELS 4
+
 
 namespace templatedb
 {

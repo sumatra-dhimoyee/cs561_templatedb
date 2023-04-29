@@ -91,7 +91,7 @@ int main()
 
     SST<int,int> sst_2 = builder_2.build();
 
-    SST<int,int> sst_3 = templatedb::Build_SST<int, int>::merge_flush(sst, sst_2);
+    SST<int,int> sst_3 = templatedb::Build_SST<int, int>::merge_sst(sst, sst_2);
 
 
 }
