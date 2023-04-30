@@ -49,9 +49,9 @@ namespace templatedb
             bool overflow;
             //Add member bloom filter later on
        
-        Build_SST(std::vector<Entry<K,V>> _data,size_t _max_size, uint8_t _level, bool _overflow = false);
+        Build_SST(std::vector<Entry<K,V>> _data,size_t _max_size, uint8_t _level, bool _overflow = false, std::vector<zone<K>>& fp, Bloomfilter& bf);
         // bool add_KV_list(std::vector<K>& keys, std::vector<std::vector<V> values);
-        static SST<K,V> merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst);
+        static SST<K,V> merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst, std::vector<zone<K>>& fp, Bloomfilter& bf);
         
         // void print_sst();
         SST<K,V> build();
