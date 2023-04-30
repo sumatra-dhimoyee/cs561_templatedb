@@ -25,8 +25,6 @@ namespace templatedb
         size_t mem_size;
         uint8_t T_ratio;
         bool leveled;
-        int bf_num_elem;
-        int bf_num_bits_per_elem;
 
         public:
 
@@ -37,8 +35,6 @@ namespace templatedb
 
         //create function which takes in a vector of Entry and puts it in memtable
         //create function which takes the data in memcache after it's full add it to the levels. 
-
-        std::vector<V> get(K key);
         
 
     };

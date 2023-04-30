@@ -3,7 +3,7 @@
 using namespace templatedb;
 
 template<typename K,typename V>
-Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data, Bloomfilter& bf)
+Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data)
 {
     
     int ret = 0;
@@ -17,8 +17,6 @@ Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data, Bloomfilter& bf)
             this->data.push_back(_data[i]);
             this->size =  block_size;
             ret++;
-            bf.program(std::to_string(_data[i].key));
-
 
         }
         else
@@ -140,38 +138,5 @@ size_t Build_Block<K,V> ::current_size()
 {
     return this->size;
 }
-
-template<typename K, typename V>
-K  Build_Block::block_min()
-{
-    
-    K min_key = this->data[0].key;
-    for (auto entry : block.data)
-    {
-        if (this->key < min_key)
-        {
-            min_key = this->key;
-        }
-    }
-    return min_key;
-
-}
-template<typename K, typename V>
-K  Build_Block::block_max()
-{
-    
-    K max_key = this->data[0].key;
-    for (auto entry : this->data)
-    {
-        if (this->key > max_key)
-        {
-            max_key = this->key;
-        }
-    }
-    return max_key;
-
-}
-
-
 
 
