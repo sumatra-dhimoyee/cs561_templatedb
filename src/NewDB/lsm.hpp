@@ -24,6 +24,8 @@ namespace templatedb
         size_t mem_size;
         uint8_t T_ratio;
         bool leveled;
+        int bf_num_elem;
+        int bf_num_bits_per_elem;
 
         public:
 

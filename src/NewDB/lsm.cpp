@@ -26,7 +26,8 @@ void LSM<K,V>::add_buffer(std::vector<K,V> entries, leveled)
         _run_size = (_level_size)/this->T_ratio
 
     std::vector<zone<K>> fp;
-    Build_SST<K,V> sst_builder = Build_SST<K,V>(entries, _run_size, this->level , fp);
+    BloomFilter bf = BloomFilter(this->bf_num_elem, this->bf_num_bits_per_elem);
+    Build_SST<K,V> sst_builder = Build_SST<K,V>(entries, _run_size, this->level , fp, bf);
     SST<K,V> sst = sst_builder.build();
         bool x = false;
         int i = 0;
@@ -34,17 +35,17 @@ void LSM<K,V>::add_buffer(std::vector<K,V> entries, leveled)
         {
             if(i < this->levels.size())
             {
-                x = level[i].add_sst(sst, this->leveled, fp);
+                x = level[i].add_sst(sst, this->leveled, fp, bf);
                 if(!x)
                 {
-                    sst = level[i].merge_runs(fp);
+                    sst = level[i].merge_runs(fp, bf);
                     level[i].clear();
                     i++;
                 }
             }
             else{
                 _level_size = this->mem_size * pow(this->T_ratio, i+1);
-                Level<K,V> lvl = Level<K,V>(sst, this->no_runs, level_size, i, fp);
+                Level<K,V> lvl = Level<K,V>(sst, this->no_runs, level_size, i, fp, bf);
                 this->levels.push_back(lvl);
                 x = true;
                 

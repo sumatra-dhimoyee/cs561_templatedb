@@ -12,6 +12,7 @@
 #include <ctime>
 #define TARGET_SIZE 4096
 #include "fencepointer.hpp"
+#include "BloomFilter/BloomFilter.h"
 
 
 
@@ -65,7 +66,7 @@ namespace templatedb
         size_t size;
        
         public:
-        Build_Block(std::vector<Entry<K,V> > _data);
+        Build_Block(std::vector<Entry<K,V> > _data, std::vector<zone<K>>& bf);
         bool add_KV(Entry<K,V> entry);
         static int add_to_block(Block<K,V>& block, std::vector<Entry<K,V> > _data);
         //bool add_KV_list(std::vector<K,vector<V>> kv_pairs);

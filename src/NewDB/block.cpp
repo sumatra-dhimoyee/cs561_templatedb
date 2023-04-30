@@ -3,7 +3,7 @@
 using namespace templatedb;
 
 template<typename K,typename V>
-Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data)
+Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data, Bloomfilter& bf)
 {
     
     int ret = 0;
@@ -17,6 +17,8 @@ Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data)
             this->data.push_back(_data[i]);
             this->size =  block_size;
             ret++;
+            bf.program(std::to_string(_data[i].key));
+
 
         }
         else
