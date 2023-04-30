@@ -10,6 +10,7 @@
 #include <vector>
 #include "level.hpp"
 #include <cmath>
+#include "memcache.hpp"
 
 namespace templatedb
 {
@@ -19,7 +20,7 @@ namespace templatedb
     {
         private:
         std::vector<level<K,V>> levels;
-        MemCache<K,V memcache;
+        MemCache<K,V> memcache;
         uint8_t no_levels;
         size_t mem_size;
         uint8_t T_ratio;
