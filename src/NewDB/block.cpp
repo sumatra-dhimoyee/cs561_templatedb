@@ -139,4 +139,54 @@ size_t Build_Block<K,V> ::current_size()
     return this->size;
 }
 
+template<typename K, typename V>
+Block<K,V> Block<K,V>::getBlock(){
+    return this->data;
+}
 
+template<typename K, typename V>
+bool Block<K,V>::compareEntries(const Entry<K,V>& a, const Entry<K,V>& b){
+    return a.key<b.key;
+}
+
+template<typename K, typename V>
+int Block<K,V>:: binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key){
+    while(l<=r){
+        int m = l+(r-1)/2;
+        if(entries[m].key == key){
+            return m;
+        }
+        if(entries[m].key < key){
+            l= m+1;
+        }else{
+            r = m-1;
+        }
+    }
+    return -1;
+}
+
+template<typename K, typename V>
+Entry<K,V> Block<K,V>::getEntry(K key){
+
+    std::vector<Entry<K,V>> entries=this->data;
+    int n= sizeof(entries)/sizeof(entries[0]);
+    int isFound= binarySearch(entries, 0, n-1, key);
+    if(isFound!=-1){
+        return entries[isFound];
+    }else{
+        throw std::runtime_error("Entry not found.");
+    }   
+}
+
+template<typename K, typename V>
+bool Block<K,V>::entryExist(K key){
+    // rethink for space
+    std::vector<Entry<K,V>> entries=this->data;
+    int n= sizeof(entries)/sizeof(entries[0]);
+    int isFound= binarySearch(entries, 0, n-1, key);
+    if(isFound!=-1){
+        return true;
+    }else{
+        return false;
+    }
+}

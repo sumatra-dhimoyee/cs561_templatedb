@@ -27,6 +27,7 @@ namespace templatedb {
             }
             bool put(K key, std::vector<V> value);
             Entry<K,V>& getEntry(K key);
+            bool entryExist(K key);
             bool updateEntry(K key, std::vector<V> value);
             bool deleteEntry(K key);
             bool readRange(K startKey, K endKey);

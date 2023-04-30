@@ -51,6 +51,13 @@ namespace templatedb
             offset = _offset;
         }
 
+        //to search data in each block
+        Block<K,V> getBlock();
+        bool compareEntries(const Entry<K,V>& a, const Entry<K,V>& b);
+        Entry<K,V> getEntry(K key);
+        int binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key);
+        bool entryExist(K Key);
+
     };
 
     template<typename K,typename V>
