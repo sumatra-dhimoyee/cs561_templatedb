@@ -19,7 +19,7 @@ namespace templatedb
     {
         private:
         std::vector<level<K,V>> levels;
-        MemCache memcache;
+        MemCache<K,V memcache;
         uint8_t no_levels;
         size_t mem_size;
         uint8_t T_ratio;
@@ -34,6 +34,8 @@ namespace templatedb
 
         //create function which takes in a vector of Entry and puts it in memtable
         //create function which takes the data in memcache after it's full add it to the levels. 
+
+        std::vector<V> get(K key);
         
 
     };

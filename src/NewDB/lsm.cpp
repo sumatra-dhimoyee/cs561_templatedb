@@ -25,8 +25,8 @@ void LSM<K,V>::add_buffer(std::vector<K,V> entries, leveled)
     else
         _run_size = (_level_size)/this->T_ratio
 
-
-    Build_SST<K,V> sst_builder = Build_SST<K,V>(entries, _run_size, this->level);
+    std::vector<zone<K>> fp;
+    Build_SST<K,V> sst_builder = Build_SST<K,V>(entries, _run_size, this->level , fp);
     SST<K,V> sst = sst_builder.build();
         bool x = false;
         int i = 0;
@@ -34,17 +34,17 @@ void LSM<K,V>::add_buffer(std::vector<K,V> entries, leveled)
         {
             if(i < this->levels.size())
             {
-                x = level[i].add_sst(sst, this->leveled);
+                x = level[i].add_sst(sst, this->leveled, fp);
                 if(!x)
                 {
-                    sst = level[i].merge_runs();
+                    sst = level[i].merge_runs(fp);
                     level[i].clear();
                     i++;
                 }
             }
             else{
                 _level_size = this->mem_size * pow(this->T_ratio, i+1);
-                Level<K,V> lvl = Level<K,V>(sst, this->no_runs, level_size, i);
+                Level<K,V> lvl = Level<K,V>(sst, this->no_runs, level_size, i, fp);
                 this->levels.push_back(lvl);
                 x = true;
                 
@@ -52,4 +52,19 @@ void LSM<K,V>::add_buffer(std::vector<K,V> entries, leveled)
         }
 
     
+}
+
+
+std::vector<V> LSM<K,V>::get(K key)
+{
+    // rough implementation -- does not work --- just for understanding the workflow of fence pointers
+    std::vector<V> ret;
+    int sorted_run = level[0].get_sorted_run_no(key);
+   int x = level[0].get_block_index(sorted_run, key);
+   if (x>=0)
+   {
+    std::vector<V> ret = level[0].lookup(sorted_run, x, key);
+    return ret
+   }
+   return ret;
 }
