@@ -8,12 +8,12 @@ using namespace std;
 
 
 template<typename K,typename V>
-bool put(K key, std::vector<V> value){
+bool MemCache<K,V>::put(K key, std::vector<V> value){
 
     size_t entrySize = sizeof(K)+sizeof(std::chrono::time_point<std::chrono::system_clock>) + sizeof(bool) + sizeof(V)*value.size();
   
-    if(entrySize>this->maxBufferSize){
-        Entry<K,V> entry= new Entry(key, value, false, std::chrono::system_clock::now());
+    if(entrySize >this->maxBufferSize){
+        Entry<K,V> entry= new Entry<K,V>(key, value, false, std::chrono::system_clock::now());
         this->memcache.push_back(entry);
         this->bufferSize+=entrySize;
         this->sort();
@@ -26,8 +26,8 @@ bool put(K key, std::vector<V> value){
 }
 
 template<typename K,typename V>
-Entry<K,V>& getEntry(K key){
-    for (Entry<K, V>& entry :: this->memcache){
+Entry<K,V>& MemCache<K,V>::getEntry(K key){
+    for (Entry<K, V>& entry : this->memcache){
         if (entry.key == key){
             return entry;
         }
@@ -36,11 +36,11 @@ Entry<K,V>& getEntry(K key){
 }
 
 template<typename K,typename V>
-bool updateEntry(K key, std::vector<V> value){
+bool MemCache<K,V>::updateEntry(K key, std::vector<V> value){
     try {
         Entry<K, V>& entry = this->get_entry(key);
         entry.value = value;
-        entry.TS= std::chrono::system_clock::now()
+        entry.TS= std::chrono::system_clock::now();
         return true;
     }
     catch (const std::exception& e) {
@@ -50,11 +50,11 @@ bool updateEntry(K key, std::vector<V> value){
 }
 
 template<typename K,typename V>
-bool deleteEntry(K key){
+bool MemCache<K,V>::deleteEntry(K key){
     try {
         Entry<K, V>& entry = this->get_entry(key);
         entry.tomb = true;
-        entry.TS= std::chrono::system_clock::now()
+        entry.TS= std::chrono::system_clock::now();
         return true;
     }
     catch (const std::exception& e) {
@@ -64,30 +64,30 @@ bool deleteEntry(K key){
 }
 
 template<typename K,typename V>
-bool compareEntries (Entry<K,V> i,Entry<K,V> j) { return (i.key<j.key); }
+bool MemCache<K,V>::compareEntries (Entry<K,V> i,Entry<K,V> j) { return (i.key<j.key); }
 
 template<typename K,typename V>
-void sort(){
-    std::sort(this->memcache.begin(), this->memcache.end(), compareEntries);
+void MemCache<K,V>::sort(){
+    std::sort(this->memcache.begin(), this->memcache.end(), compareEntries());
 }
 
 template<typename K,typename V>
-vector<Entry<K,V>>& getMemcache(){
+vector<Entry<K,V>>& MemCache<K,V>::getMemcache(){
     return this->memcache;
 }
 
 template<typename K,typename V>
-int getBufferSize(){
+int MemCache<K,V>::getBufferSize(){
     return this->bufferSize.empty();
 }
 
 template<typename K,typename V>
-bool isEmpty(){
+bool MemCache<K,V>::isEmpty(){
     return this->memcache.empty();
 }
 
 template<typename K,typename V>
-vector<K>& buildKeyVector(){
+vector<K>& MemCache<K,V>::buildKeyVector(){
     vector<K> keys;
     for(Entry<K,V>& entry : this->memcache){
         keys.push_back(entry.key);
@@ -96,7 +96,7 @@ vector<K>& buildKeyVector(){
 }
 
 template<typename K,typename V>
-vector<vector<V>>& buildValueVector(){
+vector<vector<V>>& MemCache<K,V>::buildValueVector(){
     vector<vector<V>> values;
     for(Entry<K,V>& entry : this->memcache){
         values.push_back(entry.value);
@@ -105,7 +105,7 @@ vector<vector<V>>& buildValueVector(){
 }
 
 template<typename K,typename V>
-vector<V>& buildIntValueVector(){
+vector<V>& MemCache<K,V>::buildIntValueVector(){
     vector<vector<V>> values;
     for(Entry<K,V>& entry : this->memcache){
         values.push_back(entry.value[0]);

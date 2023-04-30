@@ -1,5 +1,5 @@
-#ifndef _TEMPLATEDB_SST_H_
-#define _TEMPLATEDB_SST_H_
+#ifndef _TEMPLATEDB_MEM_H_
+#define _TEMPLATEDB_MEM_H_
 
 #include <fstream>
 #include <iostream>
@@ -7,15 +7,15 @@
 #include "sst.hpp"
 #include "block.hpp"
 
-
+using namespace std;
 
 namespace templatedb {
     template<typename K, typename V>
     class MemCache {
         private:   
-            static vector<Entry<K,V>> memcache;
-            static size_t maxBufferSize;
-            static size_t bufferSize;
+            vector<Entry<K,V>> memcache;
+            size_t maxBufferSize;
+            size_t bufferSize;
 
 
         public:
