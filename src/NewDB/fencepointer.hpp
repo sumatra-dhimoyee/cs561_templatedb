@@ -19,7 +19,12 @@ namespace templatedb
         K min;
         K max;
         int block_index;
-        zone(K _min, K _max, int _block_index);
+        zone(K _min, K _max, int _block_index)
+        {
+            min = _min;
+            max= _max;
+            block_index = _block_index;
+        }
     }
 
 }
