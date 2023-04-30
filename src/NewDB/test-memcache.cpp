@@ -6,7 +6,7 @@
 #include "memcache.cpp"
 #include <vector>
 
-using namespace templatedb;
+
 
 int main(){
 
@@ -39,7 +39,7 @@ int main(){
         entries.push_back(temp);
     }
 
-    MemCache <int,int> memcache = MemCache<int,int>(bufferSize, entries);
+    templatedb::MemCache <int,int> memcache = templatedb::MemCache<int,int>(bufferSize, entries);
 
     return 0;
 

@@ -9,14 +9,13 @@
 
 
 
-using namespace templatedb{
-
+namespace templatedb {
     template<typename K, typename V>
     class MemCache {
         private:   
-            vector<Entry<K,V>> memcache;
-            size_t maxBufferSize;
-            size_t bufferSize;
+            static vector<Entry<K,V>> memcache;
+            static size_t maxBufferSize;
+            static size_t bufferSize;
 
 
         public:
@@ -41,7 +40,10 @@ using namespace templatedb{
             vector<vector<V>>& buildValueVector();
             vector<V>& buildIntValueVector();
 
-};
+    };
 }
+
+
+
 
 #endif

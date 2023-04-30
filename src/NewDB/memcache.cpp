@@ -10,12 +10,12 @@ using namespace std;
 template<typename K,typename V>
 bool put(K key, std::vector<V> value){
 
-    size_t entry_size = sizeof(K)+sizeof(std::chrono::time_point<std::chrono::system_clock>) + sizeof(bool) + sizeof(V)*value.size();
+    size_t entrySize = sizeof(K)+sizeof(std::chrono::time_point<std::chrono::system_clock>) + sizeof(bool) + sizeof(V)*value.size();
   
     if(entrySize>this->maxBufferSize){
         Entry<K,V> entry= new Entry(key, value, false, std::chrono::system_clock::now());
         this->memcache.push_back(entry);
-        this->bufferSize+=entry_size;
+        this->bufferSize+=entrySize;
         this->sort();
         return true;
     }
