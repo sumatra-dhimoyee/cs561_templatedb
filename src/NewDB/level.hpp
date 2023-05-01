@@ -14,7 +14,6 @@
 
 namespace templatedb
 {
-    
     template<typename K, typename V>
     class Level
     {
@@ -29,15 +28,15 @@ namespace templatedb
 
     
         public:
-
         Level(SST<K,V> sst, uint8_t _no_runs, size_t _level_size, uint8_t level, std::vector<zone<K>>& fp, BF::BloomFilter& bf);
         bool add_sst(SST<K,V> sst, bool leveled, std::vector<zone<K>>& fp, BF::BloomFilter& bf);
         SST<K,V> merge_runs(std::vector<zone<K>>& fp,  BF::BloomFilter& bf);
         void clear();
         int get_block_index(int sorted_run, K key);
+        //
         int lookup(int sorted_run, int block_index, K key);
         int bloom_lookup(K key);
-
+        std::vector<SST<K,V>> get_sst_vector();
 
 
     };

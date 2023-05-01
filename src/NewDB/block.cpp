@@ -172,6 +172,31 @@ K  Build_Block<K,V>::block_max()
 
 }
 
+template<typename K, typename V>
+Block<K,V> Block<K,V>::getBlock(){
+    return this->data;
+}
+
+template<typename K, typename V>
+bool Block<K,V>::compareEntries(const Entry<K,V>& a, const Entry<K,V>& b){
+    return a.key<b.key;
+}
+
+template<typename K, typename V>
+int Block<K,V>:: binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key){
+    while(l<=r){
+        int m = l+(r-1)/2;
+        if(entries[m].key == key){
+            return m;
+        }
+        if(entries[m].key < key){
+            l= m+1;
+        }else{
+            r = m-1;
+        }
+    }
+    return -1;
+}
 
 
 

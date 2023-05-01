@@ -15,7 +15,7 @@ bool MemCache<K,V>::put(K key, std::vector<V> value){
     if(entrySize >this->maxBufferSize){
         Entry<K,V> entry= new Entry<K,V>(key, value, false, std::chrono::system_clock::now());
         this->memcache.push_back(entry);
-        this->bufferSize+=entrySize;
+        //this->bufferSize+=entrySize;
         this->sort();
         return true;
     }
@@ -36,15 +36,30 @@ Entry<K,V>& MemCache<K,V>::getEntry(K key){
 }
 
 template<typename K,typename V>
+bool MemCache<K,V>::entryExist(K key){
+    for (Entry<K, V>& entry : this->memcache){
+        if (entry.key == key){
+            return true;
+        }
+        return false;
+    }
+}
+
+template<typename K,typename V>
 bool MemCache<K,V>::updateEntry(K key, std::vector<V> value){
     try {
-        Entry<K, V>& entry = this->get_entry(key);
-        entry.value = value;
-        entry.TS= std::chrono::system_clock::now();
+        if(this->entryExist(key)){
+            Entry<K, V>& entry = this->get_entry(key);
+            entry.value = value;
+            entry.TS= std::chrono::system_clock::now();
+            this->sort();
+        }else{
+            this->put(key, value);
+        }
         return true;
     }
     catch (const std::exception& e) {
-        std::cerr << "Error: Entry Cannot be Updated" << e.what() << std::endl;
+        //std::cerr << "Error: Entry Cannot be Updated" << e.what() << std::endl;
         return false;
     }
 }
@@ -52,13 +67,22 @@ bool MemCache<K,V>::updateEntry(K key, std::vector<V> value){
 template<typename K,typename V>
 bool MemCache<K,V>::deleteEntry(K key){
     try {
-        Entry<K, V>& entry = this->get_entry(key);
-        entry.tomb = true;
-        entry.TS= std::chrono::system_clock::now();
+        if(this->entryExist(key)){
+            Entry<K, V>& entry = this->get_entry(key);
+            entry.tomb = true;
+            entry.TS= std::chrono::system_clock::now();
+        }else{
+            std::vector<V> value;
+            Entry<K,V> entry= new Entry<K,V>(key, value, true, std::chrono::system_clock::now());
+            this->memcache.push_back(entry);
+            //this->bufferSize+=entrySize;
+            this->sort();
+        }
         return true;
     }
     catch (const std::exception& e) {
-        std::cerr << "Error: Entry Cannot be Deleted" << e.what() << std::endl;
+
+        //std::cerr << "Error: Entry Cannot be Deleted" << e.what() << std::endl;
         return false;
     }
 }
@@ -76,10 +100,10 @@ vector<Entry<K,V>>& MemCache<K,V>::getMemcache(){
     return this->memcache;
 }
 
-template<typename K,typename V>
-int MemCache<K,V>::getBufferSize(){
-    return this->bufferSize.empty();
-}
+// template<typename K,typename V>
+// int MemCache<K,V>::getBufferSize(){
+//     return this->bufferSize.size();
+// }
 
 template<typename K,typename V>
 bool MemCache<K,V>::isEmpty(){
@@ -112,6 +136,23 @@ vector<V>& MemCache<K,V>::buildIntValueVector(){
     }
     return values;
 }
+
+template<typename K,typename V>
+void MemCache<K,V>::clearMemcache(){
+    this->memcache.clear();
+    this->bufferSize=0;
+}
+
+template<typename K,typename V>
+void MemCache<K,V>::printMemcache(){
+    for(int i=0; i< this->memcache.size(); i++){
+        for(int j =0; j<this->memcache[i].value.size(); j++){
+            std::cout<<"Element at Index "<<i << " : " << this->memcache[i].value[j]<<std::endl;
+        }
+        
+    }
+}
+
 
 
 
