@@ -39,8 +39,8 @@ namespace templatedb
     template<typename K,typename V>
     class Build_SST
     {
-        // private:
-        public:
+        private:
+        
             std::vector<Block<K,V>> block_vector;
             size_t size;
             // uint8_t run;
@@ -48,10 +48,10 @@ namespace templatedb
             size_t max_size;
             bool overflow;
             //Add member bloom filter later on
-       
-        Build_SST(std::vector<Entry<K,V>> _data,size_t _max_size, uint8_t _level, bool _overflow = false, std::vector<zone<K>>& fp, Bloomfilter& bf);
+        public:
+        Build_SST(std::vector<Entry<K,V>> _data,size_t _max_size, uint8_t _level,std::vector<zone<K>>& fp, BF::BloomFilter& bf, bool _overflow = false );
         // bool add_KV_list(std::vector<K>& keys, std::vector<std::vector<V> values);
-        static SST<K,V> merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst, std::vector<zone<K>>& fp, Bloomfilter& bf);
+        static SST<K,V> merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst, std::vector<zone<K>>& fp, BF::BloomFilter& bf);
         
         // void print_sst();
         SST<K,V> build();

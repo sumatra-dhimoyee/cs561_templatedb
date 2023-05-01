@@ -16,7 +16,7 @@ LSM<K,V>::LSM(std::vector<Entry<K,V>> entries, size_t _mem_size, uint8_t _T_rati
 }
 
 template<typename K, typename V>
-void LSM<K,V>::add_buffer(std::vector<K,V> entries, leveled)
+void LSM<K,V>::create_sst(std::vector<K,V> entries, leveled)
 {
     size_t _level_size = this->mem_size * T_ratio;
     size_t _run_size;
@@ -60,7 +60,7 @@ std::vector<V> LSM<K,V>::get(K key)
 {
     // rough implementation -- does not work --- just for understanding the workflow of fence pointers
     std::vector<V> ret;
-    int sorted_run = level[0].get_sorted_run_no(key);
+    int sorted_run = level[0].bloom_lookup(key);
    int x = level[0].get_block_index(sorted_run, key);
    if (x>=0)
    {

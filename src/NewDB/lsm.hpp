@@ -10,7 +10,6 @@
 #include <vector>
 #include "level.hpp"
 #include <cmath>
-#include "memcache.hpp"
 
 namespace templatedb
 {
@@ -20,7 +19,7 @@ namespace templatedb
     {
         private:
         std::vector<level<K,V>> levels;
-        MemCache<K,V> memcache;
+        MemCache<K,V memcache;
         uint8_t no_levels;
         size_t mem_size;
         uint8_t T_ratio;
@@ -31,7 +30,7 @@ namespace templatedb
         public:
 
         LSM(std::vector<K,V> entries, size_t _mem_size, uint8_T T_ratio, bool leveled);
-        void add_buffer(std::vector<K,V> entries, levelled);
+        void create_sst(std::vector<K,V> entries, leveled);
 
         // void put(Entry<K,V> entry);
 

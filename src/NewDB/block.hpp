@@ -53,13 +53,6 @@ namespace templatedb
             offset = _offset;
         }
 
-        //to search data in each block
-        Block<K,V> getBlock();
-        bool compareEntries(const Entry<K,V>& a, const Entry<K,V>& b);
-        Entry<K,V> getEntry(K key);
-        int binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key);
-        bool entryExist(K Key);
-
     };
 
     template<typename K,typename V>
@@ -73,7 +66,7 @@ namespace templatedb
         size_t size;
        
         public:
-        Build_Block(std::vector<Entry<K,V> > _data, std::vector<zone<K>>& bf);
+        Build_Block(std::vector<Entry<K,V> > _data, BF::BloomFilter& bf);
         bool add_KV(Entry<K,V> entry);
         static int add_to_block(Block<K,V>& block, std::vector<Entry<K,V> > _data);
         //bool add_KV_list(std::vector<K,vector<V>> kv_pairs);

@@ -2,6 +2,8 @@
 #include "block.cpp"
 #include "sst.hpp"
 #include "sst.cpp"
+#include "level.hpp"
+#include "level.cpp"
 #include "BloomFilter/BloomFilter.h"
 #include "BloomFilter/BloomFilter.cpp"
 #include "BloomFilter/murmurhash.cpp"
@@ -40,7 +42,6 @@ int main()
     std::vector<zone<int>> fp;
     BF::BloomFilter bf = BF::BloomFilter(1000, 10);
     templatedb::Build_SST<int, int> builder = templatedb::Build_SST<int, int>(entries, 8*1024, 0, fp, bf);
-
     //-------------------------test bloom filter-------------------
     // for(int i = 0 ; i < 230; i++)
     // {
@@ -52,11 +53,12 @@ int main()
     // }
 
     //-----------------print elements to see if they are added correctly--------------------
-
+    
     SST<int,int> sst = builder.build();
     std::cout << "BLOCK VECTOR SIZE" << sst.block_vector.size()<<std::endl;
-
     builder.print_block(sst.block_vector[0]);
+    templatedb::Level<int,int> lvl = templatedb::Level<int,int>(sst, this->no_runs, level_size, i, fp, bf); 
+
     // builder.print_block(builder.block_vector[1]);
 
 
@@ -69,7 +71,8 @@ int main()
 
     //--------------------------------test build function---------------------------------
 
-
+/*
+    SST<int,int> sst = builder.build();
 
     std::vector<Entry<int,int>> entries_2;
      for(int i = 10; i < 20; i ++)
@@ -119,6 +122,6 @@ int main()
         }
         
     }
-
+*/
 
 }

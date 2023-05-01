@@ -1,5 +1,9 @@
 #include "block.hpp"
 #include "block.cpp"
+#include "BloomFilter/BloomFilter.h"
+#include "BloomFilter/BloomFilter.cpp"
+#include "BloomFilter/murmurhash.cpp"
+#include "BloomFilter/murmurhash.h"
 #include <vector>
 int main()
 {
@@ -35,8 +39,9 @@ int main()
         std::cout<<"SIZE OF "<<i<<" "<<temp_size<<std::endl;
         size = size +temp_size;
     }
+    BF::BloomFilter bf = BF::BloomFilter (1000, 10);
     std::cout<<size<<std::endl;
-    templatedb::Build_Block<int, int> builder = templatedb::Build_Block<int, int>(data);
+    templatedb::Build_Block<int, int> builder = templatedb::Build_Block<int, int>(data, bf);
     auto TS = std::chrono::system_clock::now();
     templatedb::Entry<int, int> entry_one = templatedb::Entry<int, int>(43, {1, 2, 3}, false, TS);
     TS = std::chrono::system_clock::now();
@@ -46,10 +51,10 @@ int main()
 
     
     //add some key-value pairs to the builder
-    builder.add_KV(entry_one);
-    builder.add_KV(entry_two);
-    builder.add_KV(entry_three);
-    builder.print_block();
+    // builder.add_KV(entry_one);
+    // builder.add_KV(entry_two);
+    // builder.add_KV(entry_three);
+    // builder.print_block();
 
     //---------------------test add_to_block function--------------------
     /*
@@ -62,8 +67,8 @@ int main()
     }
     Block<int, int> block = builder.build();
     int index = templatedb::Build_Block<int, int>::add_to_block(block, entries);
-    
-    Build_Block<int, int> builder_two = Build_Block<int, int>(block.data);
+    BF::BloomFilter bf_2 = BloomFilter bf(1000, 10);
+    Build_Block<int, int> builder_two = Build_Block<int, int>(block.data, bf);
     
     std::cout<<"INDEX: "<<index<<std::endl;
     builder_two.print_block();
@@ -71,24 +76,30 @@ int main()
 
     //---------------------test constructor--------------------
     
-    /*
+    
     std::vector<Entry<int,int>> entries;
     size_t test_cons_size = 0;
-    for(int i = 0; i < 220; i ++)
+    for(int i = 0; i <500; i ++)
     {
 
         auto TS = std::chrono::system_clock::now();
-        templatedb::Entry<int, int> temp = templatedb::Entry<int, int>(43, {1, 2, 3}, false, TS);
+        templatedb::Entry<int, int> temp = templatedb::Entry<int, int>(i, {1, 2, 3}, false, TS);
         
         entries.push_back(temp);
     }
-    
-    Build_Block<int, int> builder_two = Build_Block<int, int>(entries);
+    BF::BloomFilter bf_3 = BF::BloomFilter(1000, 10);
+    Build_Block<int, int> builder_two = Build_Block<int, int>(entries, bf_3);
     
     std::cout<<"INDEX: "<<builder_two.enteries_kept_size()<<std::endl;
     builder_two.print_block();
+    bool query_result = bf_3.query(std::to_string(163)); // Query the filter with "hello"
+    if (query_result) {
+        std::cout << "The element may be in the filter." << std::endl;
+    } else {
+        std::cout << "The element is definitely not in the filter." << std::endl;
+    }
     
-*/
+
 
     return 0;
 }

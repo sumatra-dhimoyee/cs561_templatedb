@@ -21,7 +21,7 @@ Level<K,V> :: Level(SST<K,V> sst, uint8_t _no_runs, size_t _level_size, uint8_t 
 }
 
 template<typename K, typename V>
-bool add_sst(SST<K,V> sst, bool merge, std::vector<zone<K>>& fp, BloomFilter& bf);
+bool add_sst(SST<K,V> sst, bool leveled, std::vector<zone<K>>& fp, BloomFilter& bf);
 {
     // Build_SST<K,V> sst_builder = Build_SST<K,V>(entry_vector, this->run_size,  this->level);
     // SST<K,V> sst = sst_builder.build();
@@ -32,7 +32,7 @@ bool add_sst(SST<K,V> sst, bool merge, std::vector<zone<K>>& fp, BloomFilter& bf
         this->BF.push_back(bf);
         return true;
     }
-    if(merge)
+    if(leveled)
     {
         SST<K,V> merged_sst = Build_SST<int, int>::merge_sst(this->sst_vector[0], sst, fp, bf);
         this->clear();
@@ -82,7 +82,7 @@ void Level<K,V>::clear()
 template<typename K, typename V>
 int Level::get_block_index(int sorted_run, K key)
 {
-    for(int i = 0 ; i < FP[sorted_run]; i++)
+    for(int i = 0 ; i < this->FP[sorted_run]; i++)
     {
         if(FP[sorted_run][i].min<= key <= FP[sorted_run][i].max)
             return FP[sorted_run][i].block_index;
@@ -99,7 +99,7 @@ int Level::lookup(int sorted_run, int block_index, K key)
 }
 
 template<typename K, typename V>
-int Level::get_sorted_run_no( K key)
+int Level::bloom_lookup( K key)
 {
     //implement bloomfilter lookup
     for (auto rit = this->BF.rbegin(); rit != this->BF.rend(); ++rit) {
