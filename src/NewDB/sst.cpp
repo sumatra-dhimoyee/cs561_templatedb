@@ -120,7 +120,7 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
 template<typename K, typename V>
 SST<K,V> Build_SST<K,V>::merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst, std::vector<zone<K>>& fp, BF::BloomFilter& bf)
 {
-    
+    fp.clear();
     std::vector<Entry<K,V>> merged_entries = merge_sorted_vectors(first_sst.block_vector, second_sst.block_vector);
     Build_SST<K,V> sst_builder = Build_SST(merged_entries, first_sst.max_size,  first_sst.level, fp, bf, false);
     SST<K,V> sst = sst_builder.build();
