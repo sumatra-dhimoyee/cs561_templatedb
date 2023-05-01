@@ -92,7 +92,7 @@ int main()
     
     std::cout<<"INDEX: "<<builder_two.enteries_kept_size()<<std::endl;
     builder_two.print_block();
-    bool query_result = bf_3.query(std::to_string(163)); // Query the filter with "hello"
+    bool query_result = bf_3.query(std::to_string(35)); // Query the filter with "hello"
     if (query_result) {
         std::cout << "The element may be in the filter." << std::endl;
     } else {

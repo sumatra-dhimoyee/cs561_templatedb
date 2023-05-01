@@ -106,7 +106,7 @@ int main()
      
     SST<int,int> sst_2 = builder_2.build();
     std::cout<<"ITS TRUE"<<sst_2.block_vector[0].data[0].tomb<<std::endl;
-
+    builder_2.print_block(sst_2.block_vector[0]);
     std::vector<zone<int>> fp_3;
     BF::BloomFilter bf_3 = BF::BloomFilter(1000, 10);
     SST<int,int> sst_3 = templatedb::Build_SST<int, int>::merge_sst(sst, sst_2, fp_3, bf_3);

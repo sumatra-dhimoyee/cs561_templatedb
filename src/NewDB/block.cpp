@@ -23,12 +23,12 @@ Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data, BF::BloomFilter& 
         }
         else
         {
-            std::cout<<"FINAL SIZE: "<<this->size<<std::endl;
 
             break;
         }
 
     }
+    std::cout<<"FINAL SIZE: "<<this->size<<std::endl;
     this->entries_kept = ret;
     
     

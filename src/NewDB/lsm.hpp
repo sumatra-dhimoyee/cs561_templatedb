@@ -18,9 +18,10 @@ namespace templatedb
     class LSM
     {
         private:
-        std::vector<level<K,V>> levels;
-        MemCache<K,V memcache;
+        std::vector<Level<K,V>> levels;
+        // MemCache<K,V> memcache;
         uint8_t no_levels;
+        uint8_t no_runs;
         size_t mem_size;
         uint8_t T_ratio;
         bool leveled;
@@ -29,8 +30,8 @@ namespace templatedb
 
         public:
 
-        LSM(std::vector<K,V> entries, size_t _mem_size, uint8_T T_ratio, bool leveled);
-        void create_sst(std::vector<K,V> entries);
+        LSM(size_t _mem_size, uint8_t T_ratio, bool leveled, int _bf_num_elem, int _bf_num_bits_per_elem);
+        void create_sst(std::vector<Entry<K,V>> entries);
 
         // void put(Entry<K,V> entry);
 
