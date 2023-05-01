@@ -3,7 +3,7 @@
 using namespace templatedb;
 
 template<typename K,typename V>
-Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data, Bloomfilter& bf)
+Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data, BF::BloomFilter& bf)
 {
     
     int ret = 0;
@@ -23,12 +23,12 @@ Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data, Bloomfilter& bf)
         }
         else
         {
-            std::cout<<"FINAL SIZE: "<<this->size<<std::endl;
 
             break;
         }
 
     }
+    std::cout<<"FINAL SIZE: "<<this->size<<std::endl;
     this->entries_kept = ret;
     
     
@@ -146,11 +146,11 @@ K  Build_Block<K,V>::block_min()
 {
     
     K min_key = this->data[0].key;
-    for (auto entry : block.data)
+    for (auto entry : this->data)
     {
-        if (this->key < min_key)
+        if (entry.key < min_key)
         {
-            min_key = this->key;
+            min_key = entry.key;
         }
     }
     return min_key;
@@ -163,9 +163,9 @@ K  Build_Block<K,V>::block_max()
     K max_key = this->data[0].key;
     for (auto entry : this->data)
     {
-        if (this->key > max_key)
+        if (entry.key > max_key)
         {
-            max_key = this->key;
+            max_key = entry.key;
         }
     }
     return max_key;
@@ -198,28 +198,5 @@ int Block<K,V>:: binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K k
     return -1;
 }
 
-template<typename K, typename V>
-Entry<K,V> Block<K,V>::getEntry(K key){
 
-    std::vector<Entry<K,V>> entries=this->data;
-    int n= sizeof(entries)/sizeof(entries[0]);
-    int isFound= binarySearch(entries, 0, n-1, key);
-    if(isFound!=-1){
-        return entries[isFound];
-    }else{
-        throw std::runtime_error("Entry not found.");
-    }   
-}
 
-template<typename K, typename V>
-bool Block<K,V>::entryExist(K key){
-    // rethink for space
-    std::vector<Entry<K,V>> entries=this->data;
-    int n= sizeof(entries)/sizeof(entries[0]);
-    int isFound= binarySearch(entries, 0, n-1, key);
-    if(isFound!=-1){
-        return true;
-    }else{
-        return false;
-    }
-}

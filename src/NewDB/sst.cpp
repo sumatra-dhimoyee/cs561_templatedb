@@ -6,12 +6,12 @@ using namespace templatedb;
 
 
 template<typename K,typename V>
-Build_SST<K,V> ::Build_SST(std::vector<Entry<K,V>> _data, size_t _max_size, uint8_t _level, bool _overflow, std::vector<zone<K>>& fp, Bloomfilter& bf)
+Build_SST<K,V> ::Build_SST(std::vector<Entry<K,V>> _data, size_t _max_size, uint8_t _level,  std::vector<zone<K>>& fp, BF::BloomFilter& bf, bool _overflow)
 {
     this->max_size = _max_size;
     // this->run = _run;
     this->level = _level;
-    this->size = sizeof(size_t) +sizeof(uint8_t) +sizeof(uint8_t);
+    this->size = sizeof(size_t)*2 +sizeof(uint8_t) +sizeof(bool);
     this->overflow = _overflow;
     int curr_block_size = 0;
     int perm_size = _data.size();
@@ -31,8 +31,9 @@ Build_SST<K,V> ::Build_SST(std::vector<Entry<K,V>> _data, size_t _max_size, uint
     curr_block_size= curr_block_size + kept_entries;
     Block<K,V> block = builder.build();
     this->block_vector.push_back(block);
-    zone<K> Z = zone(builder.min(), builder.max(), this->block_vector.size()-1);
+    zone<K> Z = zone<K>(builder.block_min(), builder.block_max(), this->block_vector.size()-1);
     fp.push_back(Z);
+   
     
 
     }
@@ -45,23 +46,26 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
     int vec_i = 0, vec_j = 0, i = 0, j = 0;
 
     while (i < B1.size() && j < B2.size())
-    {
+    {   
+
         while(vec_i < B1[i].data.size() && vec_j < B2[j].data.size())
         {
             if(B1[i].data[vec_i].key < B2[j].data[vec_j].key )
             {
+               
                 merged_vector.push_back(B1[i].data[vec_i]);
                 vec_i++;
             }
             else if (B1[i].data[vec_i].key > B2[j].data[vec_j].key)
             {
-                merged_vector.push_back(B2[i].data[vec_j]);
+                merged_vector.push_back(B2[j].data[vec_j]);
                 vec_j++;
+                
             }
             else
             {
                 
-                if(B1[i].data[vec_i].tomb)
+                if(B1[i].data[vec_i].tomb && ! B2[j].data[vec_j].tomb)
                 {
                     
                     merged_vector.push_back(B1[i].data[vec_i]);
@@ -80,6 +84,7 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
             }
 
         }
+        
         if(vec_i == B1[i].data.size())
         {
             i++;
@@ -113,18 +118,18 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
 }
 
 template<typename K, typename V>
-SST<K,V> Build_SST<K,V>::merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst, std::vector<zone<K>>& fp, Bloomfilter& bf)
+SST<K,V> Build_SST<K,V>::merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst, std::vector<zone<K>>& fp, BF::BloomFilter& bf)
 {
-
+    
     std::vector<Entry<K,V>> merged_entries = merge_sorted_vectors(first_sst.block_vector, second_sst.block_vector);
-
-    Build_SST<K,V> sst_builder = Build_SST(merged_entries, first_sst.max_size,  first_sst.level, false, fp, bf);
+    Build_SST<K,V> sst_builder = Build_SST(merged_entries, first_sst.max_size,  first_sst.level, fp, bf, false);
     SST<K,V> sst = sst_builder.build();
+    
     // for (int i = 0; i < sst_builder.block_vector.size();i++)
     // {
     //     sst_builder.print_block(sst_builder.block_vector[i]);
     // }
-    // return sst;
+    return sst;
      
 }  
 
@@ -153,13 +158,6 @@ void Build_SST<K, V>::print_block(Block<K,V>& block)
     }
 
 }
-
-
-//read a single SST for key
-
-
-
-
 
 
 
