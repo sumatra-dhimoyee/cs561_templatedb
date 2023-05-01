@@ -30,7 +30,7 @@ namespace templatedb
         public:
 
         LSM(std::vector<K,V> entries, size_t _mem_size, uint8_T T_ratio, bool leveled);
-        void create_sst(std::vector<K,V> entries, leveled);
+        void create_sst(std::vector<K,V> entries);
 
         // void put(Entry<K,V> entry);
 
