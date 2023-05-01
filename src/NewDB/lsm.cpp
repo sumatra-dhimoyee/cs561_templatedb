@@ -87,7 +87,7 @@ std::vector<V> LSM<K,V>::get(K key)
 
 template<typename K, typename V>
 MemCache<K,V> LSM<K,V>::createMemcache(){
-    std::vector<Entry<k,V>> entries;
+    std::vector<Entry<K,V>> entries;
     this->memcache= new MemCache(mem_size, entries);
     return this->memcache;
 

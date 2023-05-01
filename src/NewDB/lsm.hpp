@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <vector>
 #include "level.hpp"
+#include "memcache.hpp"
 #include <cmath>
 
 namespace templatedb
