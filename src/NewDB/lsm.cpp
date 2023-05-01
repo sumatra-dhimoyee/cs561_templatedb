@@ -16,11 +16,11 @@ LSM<K,V>::LSM(std::vector<Entry<K,V>> entries, size_t _mem_size, uint8_t _T_rati
 }
 
 template<typename K, typename V>
-void LSM<K,V>::create_sst(std::vector<K,V> entries, leveled)
+void LSM<K,V>::create_sst(std::vector<K,V> entries)
 {
     size_t _level_size = this->mem_size * T_ratio;
     size_t _run_size;
-    if(leveled)
+    if(this->leveled)
         _run_size = _level_size
     else
         _run_size = (_level_size)/this->T_ratio
