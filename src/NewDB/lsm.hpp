@@ -30,8 +30,8 @@ namespace templatedb
 
         public:
 
-        LSM(std::vector<K,V> entries, size_t _mem_size, uint8_T T_ratio, bool leveled);
-        void add_buffer(std::vector<K,V> entries, levelled);
+        LSM(std::vector<Entry<K,V>> entries, size_t _mem_size, uint8_t _T_ratio, bool _leveled);
+        void add_buffer(std::vector<K,V> entries, bool leveled);
 
         // void put(Entry<K,V> entry);
 
@@ -39,6 +39,13 @@ namespace templatedb
         //create function which takes the data in memcache after it's full add it to the levels. 
 
         std::vector<V> get(K key);
+        MemCache<K,V> createMemcache();
+        bool put(K key, V value);
+        bool update(K key, V value);
+        V pointQuery(K key);
+        bool deleteQuery(K key);
+        std::vector<V> rangeQuery(K minkey, K maxkey);
+        bool deleteRangeQuery(K minkey, K maxkey);
         
 
     };

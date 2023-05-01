@@ -25,6 +25,8 @@ namespace templatedb
             max= _max;
             block_index = _block_index;
         }
-    }
+    };
 
 }
+
+#endif

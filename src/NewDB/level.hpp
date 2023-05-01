@@ -20,7 +20,8 @@ namespace templatedb
         K min;
         K max;
         int block_index;
-    }
+    };
+
     template<typename K, typename V>
     class Level
     {
@@ -36,12 +37,14 @@ namespace templatedb
     
         public:
 
-        Level(std::vector<Entry<K,V>> _sst_vector, int _no_runs, size_t _level_size, uint8_t level, std::vector<zone<K>>& fp, BloomFilter& bf);
+        Level(SST<K,V> sst, uint8_t _no_runs, size_t _level_size, uint8_t level, std::vector<zone<K>>& fp, BloomFilter& bf);
         bool add_sst(std::vector<Entry<K,V>>, bool merge, std::vector<zone<K>>& fp, BloomFilter& bf);
         SST<K,V> merge_runs(std::vector<zone<K>>& fp,  BloomFilter& bf);
         int get_block_index(int sorted_run, K key);
+        //
         int lookup(int sorted_run, int block_index, K key);
         int get_sorted_run_no(K key);
+        std::vector<SST<K,V>> get_sst_vector();
 
 
 

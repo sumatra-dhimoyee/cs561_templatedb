@@ -40,6 +40,7 @@ namespace templatedb {
             vector<K>& buildKeyVector();
             vector<vector<V>>& buildValueVector();
             vector<V>& buildIntValueVector();
+            void clearMemcache();
 
     };
 }

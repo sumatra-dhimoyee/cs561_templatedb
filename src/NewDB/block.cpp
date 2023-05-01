@@ -142,7 +142,7 @@ size_t Build_Block<K,V> ::current_size()
 }
 
 template<typename K, typename V>
-K  Build_Block::block_min()
+K  Build_Block<K,V>::block_min()
 {
     
     K min_key = this->data[0].key;
@@ -157,7 +157,7 @@ K  Build_Block::block_min()
 
 }
 template<typename K, typename V>
-K  Build_Block::block_max()
+K  Build_Block<K,V>::block_max()
 {
     
     K max_key = this->data[0].key;
@@ -172,7 +172,7 @@ K  Build_Block::block_max()
 
 }
 
-
+template<typename K, typename V>
 Block<K,V> Block<K,V>::getBlock(){
     return this->data;
 }
