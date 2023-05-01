@@ -40,12 +40,13 @@ namespace templatedb
 
         std::vector<V> get(K key);
         MemCache<K,V> createMemcache();
-        bool put(K key, V value);
+        void put(K key, V value);
         bool update(K key, V value);
         V pointQuery(K key);
         bool deleteQuery(K key);
         std::vector<V> rangeQuery(K minkey, K maxkey);
         bool deleteRangeQuery(K minkey, K maxkey);
+        bool garbageCollection();
         
 
     };

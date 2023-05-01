@@ -15,7 +15,7 @@ bool MemCache<K,V>::put(K key, std::vector<V> value){
     if(entrySize >this->maxBufferSize){
         Entry<K,V> entry= new Entry<K,V>(key, value, false, std::chrono::system_clock::now());
         this->memcache.push_back(entry);
-        this->bufferSize+=entrySize;
+        //this->bufferSize+=entrySize;
         this->sort();
         return true;
     }
@@ -75,7 +75,7 @@ bool MemCache<K,V>::deleteEntry(K key){
             std::vector<V> value;
             Entry<K,V> entry= new Entry<K,V>(key, value, true, std::chrono::system_clock::now());
             this->memcache.push_back(entry);
-            this->bufferSize+=entrySize;
+            //this->bufferSize+=entrySize;
             this->sort();
         }
         return true;
@@ -100,10 +100,10 @@ vector<Entry<K,V>>& MemCache<K,V>::getMemcache(){
     return this->memcache;
 }
 
-template<typename K,typename V>
-int MemCache<K,V>::getBufferSize(){
-    return this->bufferSize.size();
-}
+// template<typename K,typename V>
+// int MemCache<K,V>::getBufferSize(){
+//     return this->bufferSize.size();
+// }
 
 template<typename K,typename V>
 bool MemCache<K,V>::isEmpty(){
@@ -142,6 +142,17 @@ void MemCache<K,V>::clearMemcache(){
     this->memcache.clear();
     this->bufferSize=0;
 }
+
+template<typename K,typename V>
+void MemCache<K,V>::printMemcache(){
+    for(int i=0; i< this->memcache.size(); i++){
+        for(int j =0; j<this->memcache[i].value.size(); j++){
+            std::cout<<"Element at Index "<<i << " : " << this->memcache[i].value[j]<<std::endl;
+        }
+        
+    }
+}
+
 
 
 
