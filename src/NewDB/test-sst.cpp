@@ -76,7 +76,7 @@ int main()
     {
 
         auto TS = std::chrono::system_clock::now();
-        templatedb::Entry<int, int> temp = templatedb::Entry<int, int>(i, {i+2, i+4, i+6}, true, TS);
+        templatedb::Entry<int, int> temp = templatedb::Entry<int, int>(i, {i+2, i+4, i+6}, false, TS);
         
         entries_2.push_back(temp);
     }
@@ -84,7 +84,7 @@ int main()
     {
 
         auto TS = std::chrono::system_clock::now();
-        templatedb::Entry<int, int> temp = templatedb::Entry<int, int>(i, {i+1, i+2, i+3}, false, TS);
+        templatedb::Entry<int, int> temp = templatedb::Entry<int, int>(i, {i+2, i+4, i+6}, false, TS);
         
         entries_2.push_back(temp);
     }
@@ -110,15 +110,16 @@ int main()
     std::vector<zone<int>> fp_3;
     BF::BloomFilter bf_3 = BF::BloomFilter(1000, 10);
     SST<int,int> sst_3 = templatedb::Build_SST<int, int>::merge_sst(sst, sst_2, fp_3, bf_3);
+    builder.print_block(sst_3.block_vector[0]);
 
-    for(int i = 0 ; i < 450; i++)
-    {
-        bool query_result = bf_3.query(std::to_string(i));
-        if (!query_result) {
-        std::cout<< i<<" IS NOT PRESENT IN THE FILTER"<< std::endl;
-        }
+    // for(int i = 0 ; i < 450; i++)
+    // {
+    //     bool query_result = bf_3.query(std::to_string(i));
+    //     if (!query_result) {
+    //     std::cout<< i<<" IS NOT PRESENT IN THE FILTER"<< std::endl;
+    //     }
         
-    }
+    // }
 
 
 }

@@ -77,9 +77,9 @@ templatedb::LSM<int,int> TieredLSM = templatedb::LSM<int,int>(4*1024, 3, false, 
     // TieredLSM.create_sst(entries_6);
     std::cout<<TieredLSM.levels.size()<<std::endl;
     // std::cout<<TieredLSM.levels[i].<<std::endl;
-    int k = TieredLSM.levels[1].bloom_lookup(450);
-    int j = TieredLSM.levels[1].get_block_index(k, 450);
-    std::cout<<k<<std::endl;
-    std::cout<<"LL "<<j<<std::endl;
+    // int k = TieredLSM.levels[1].bloom_lookup(450);
+    // int j = TieredLSM.levels[1].get_block_index(k, 450);
+    // std::cout<<k<<std::endl;
+    std::cout<<WRITE_IO<<std::endl;
 
 }

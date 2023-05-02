@@ -37,6 +37,7 @@ Build_SST<K,V> ::Build_SST(std::vector<Entry<K,V>> _data, size_t _max_size, uint
     
 
     }
+    
 }
 
 template<typename K, typename V>
@@ -65,22 +66,22 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
             else
             {
                 
-                if(B1[i].data[vec_i].tomb && ! B2[j].data[vec_j].tomb)
-                {
+                // if(B1[i].data[vec_i].tomb && ! B2[j].data[vec_j].tomb)
+                // {
                     
-                    merged_vector.push_back(B1[i].data[vec_i]);
-                    merged_vector.push_back(B2[j].data[vec_j]);
-                    vec_i++;
-                    vec_j++;
-                }
-                else
-                {
+                //     merged_vector.push_back(B1[i].data[vec_i]);
+                //     merged_vector.push_back(B2[j].data[vec_j]);
+                //     vec_i++;
+                //     vec_j++;
+                // }
+                // else
+                // {
                     // std::cout<<"KEY 1: "<<B1[i].data[vec_i].key<<" KEY 2: "<<B2[j].data[vec_j].key<<std::endl;
                     // std::cout<<"I AM HERE"<<std::endl;
                     merged_vector.push_back(B2[j].data[vec_j]);
                     vec_i++;
                     vec_j++;
-                }
+                // }
             }
 
         }
@@ -114,6 +115,7 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
             vec_j = 0;  
         }
     }
+    READ_IO = READ_IO + B1.size() + B2.size();
     return merged_vector;
 }
 

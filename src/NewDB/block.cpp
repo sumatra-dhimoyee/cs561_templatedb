@@ -30,6 +30,8 @@ Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data, BF::BloomFilter& 
     }
     // std::cout<<"FINAL SIZE: "<<this->size<<std::endl;
     this->entries_kept = ret;
+
+    WRITE_IO++;
     
     
 }
