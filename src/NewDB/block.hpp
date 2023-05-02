@@ -11,8 +11,11 @@
 #include <chrono>
 #include <ctime>
 #define TARGET_SIZE 4096
+#include "fencepointer.hpp"
+#include "BloomFilter/BloomFilter.h"
 
-
+int READ_IO = 0;
+int WRITE_IO = 0;
 
 namespace templatedb
 {
@@ -62,8 +65,9 @@ namespace templatedb
         // std::vector<K> keys;
         // std::vector<std::vector<V>> values;
         size_t size;
+       
         public:
-        Build_Block(std::vector<Entry<K,V> > _data);
+        Build_Block(std::vector<Entry<K,V> > _data, BF::BloomFilter& bf);
         bool add_KV(Entry<K,V> entry);
         static int add_to_block(Block<K,V>& block, std::vector<Entry<K,V> > _data);
         //bool add_KV_list(std::vector<K,vector<V>> kv_pairs);
@@ -72,6 +76,8 @@ namespace templatedb
         int enteries_kept_size();
         void print_block();
         Block<K,V> build();
+        K block_min();
+        K block_max();
 
     };
 

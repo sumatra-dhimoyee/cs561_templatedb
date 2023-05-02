@@ -3,7 +3,7 @@
 using namespace templatedb;
 
 template<typename K,typename V>
-Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data)
+Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data, BF::BloomFilter& bf)
 {
     
     int ret = 0;
@@ -17,17 +17,21 @@ Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data)
             this->data.push_back(_data[i]);
             this->size =  block_size;
             ret++;
+            bf.program(std::to_string(_data[i].key));
+
 
         }
         else
         {
-            std::cout<<"FINAL SIZE: "<<this->size<<std::endl;
 
             break;
         }
 
     }
+    // std::cout<<"FINAL SIZE: "<<this->size<<std::endl;
     this->entries_kept = ret;
+
+    WRITE_IO++;
     
     
 }
@@ -138,5 +142,38 @@ size_t Build_Block<K,V> ::current_size()
 {
     return this->size;
 }
+
+template<typename K, typename V>
+K  Build_Block<K,V>::block_min()
+{
+    
+    K min_key = this->data[0].key;
+    for (auto entry : this->data)
+    {
+        if (entry.key < min_key)
+        {
+            min_key = entry.key;
+        }
+    }
+    return min_key;
+
+}
+template<typename K, typename V>
+K  Build_Block<K,V>::block_max()
+{
+    
+    K max_key = this->data[0].key;
+    for (auto entry : this->data)
+    {
+        if (entry.key > max_key)
+        {
+            max_key = entry.key;
+        }
+    }
+    return max_key;
+
+}
+
+
 
 
