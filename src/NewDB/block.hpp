@@ -45,7 +45,7 @@ namespace templatedb
         // std::vector<std::vector<V>> values;
         size_t offset;
         
-        //add fence pointers later
+        //add fence pointers later 
         Block(std::vector<Entry<K,V>> _data ,int _offset)
         {
             data = _data;
