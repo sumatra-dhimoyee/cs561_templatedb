@@ -17,7 +17,10 @@ Build_Block<K, V>::Build_Block(std::vector<Entry<K,V> > _data, BF::BloomFilter& 
             this->data.push_back(_data[i]);
             this->size =  block_size;
             ret++;
-            bf.program(std::to_string(_data[i].key));
+            if(!_data[i].tomb){
+                bf.program(std::to_string(_data[i].key));
+            }
+            
 
 
         }
@@ -152,7 +155,10 @@ K  Build_Block<K,V>::block_min()
     {
         if (entry.key < min_key)
         {
-            min_key = entry.key;
+            if(!entry.tomb){
+                min_key = entry.key;
+            }
+            
         }
     }
     return min_key;
@@ -167,7 +173,9 @@ K  Build_Block<K,V>::block_max()
     {
         if (entry.key > max_key)
         {
-            max_key = entry.key;
+            if(!entry.tomb){
+                max_key = entry.key;
+            } 
         }
     }
     return max_key;

@@ -3,10 +3,12 @@
 using namespace templatedb;
 
 template<typename K, typename V>
-LSM<K,V>::LSM(size_t _mem_size, uint8_t _T_ratio, bool _leveled, int _bf_num_elem, int _bf_num_bits_per_elem )
+LSM<K,V>::LSM(size_t _mem_size, uint8_t _T_ratio, bool _leveled, int _bf_num_elem, int _bf_num_bits_per_elem)
 {
 
+    std::vector<Entry<K,V>> entries;
     this->mem_size = _mem_size;
+    this->memcache = new MemCache<K,V>(this->mem_size, entries);
     this->T_ratio = _T_ratio;
     this->leveled = _leveled;
     this->bf_num_elem = _bf_num_elem;
@@ -90,13 +92,13 @@ std::vector<V> LSM<K,V>::get(K key)
    return ret;
 }
 
-template<typename K, typename V>
-MemCache<K,V> LSM<K,V>::createMemcache(){
-    std::vector<Entry<K,V>> entries;
-    this->memcache= MemCache(this->mem_size, entries);
-    return this->memcache;
+// template<typename K, typename V>
+// MemCache<K,V> LSM<K,V>::createMemcache(){
+//     std::vector<Entry<K,V>> entries;
+//     this->memcache= MemCache<K,V>(this->mem_size, entries);
+//     return this->memcache;
 
-}
+// }
 
 template<typename K, typename V>
 void LSM<K,V>::put(K key, V val){
@@ -104,7 +106,7 @@ void LSM<K,V>::put(K key, V val){
     value.push_back(val);
     bool toMemcache= this->memcache.put(key, value);
     if(!toMemcache){
-        create_sst(this->memcache);
+        create_sst(this->memcache->getMemcache());
         this->memcache.clearMemcache();
         this->memcache.put(key, value);
     }
@@ -126,40 +128,58 @@ bool LSM<K,V>::update(K key, V value){
 }
 
 template<typename K, typename V>
-std::vector<V> LSM<K,V>::pointQuery(K key){
-    if(this->memcache.entryExist(key)){
-        return this->memcache.getEntry(key).value;
+void LSM<K,V>::pointQuery(K key, std::vector<V>& result, bool& flag ){
+    std::vector<V> emptyVal;
+    emptyVal.push_back(0);
+    //Entry<K,V> entry;
+    if(this->memcache->entryExist(key)){
+        std::cout<<"I MA HERE"<<std::endl;
+        result = this->memcache->getEntry(key).value;
     }else{
-        for(int i=0; i<no_levels; i++){
+        std::cout<<"NUM LEVELS: "<<this->levels.size()<<std::endl;
+        for(int i=0; i<this->levels.size(); i++){
             int bloomFinder = this->levels[i].bloom_lookup(key);
+            std::cout << "bloomFinder " << bloomFinder << std::endl;
             if(bloomFinder!=-1){
+                // std::cout << "bloomFinder " << bloomFinder << std::endl;
+                std::vector<SST<K,V>> sstVector=this->levels[i].get_sst_vector();
+                SST<K,V> tempSST= sstVector[bloomFinder];
                 int blockIndex= this->levels[i].get_block_index(bloomFinder, key);
+                std::cout << "blockIndex " << blockIndex << std::endl;
                 if(blockIndex!=-1){
-                    std::vector<SST<K,V>> sstVector=this->levels[i].get_sst_vector();
-                    Block<K,V> tempBlock = sstVector[blockIndex].getBlock();
-                    if(tempBlock.entryExist()){
-                        Entry<K,V> tempEntry = tempBlock.getEntry();
+                    Block<K,V> tempBlock = tempSST.block_vector[blockIndex];
+                    // std::vector<SST<K,V>> sstVector=this->levels[i].get_sst_vector();
+                    // Block<K,V> tempBlock = sstVector[bloomFinder].block_vector(blockIndex);
+                    if(tempBlock.entryExist(key)){
+                        Entry<K,V> tempEntry = tempBlock.getEntry(key);
                         READ_IO++;
-                        return tempEntry.value;
+                        result = tempEntry.value;
                     }
                 }
             }
         }
-
-        throw std::runtime_error("Entry not found.");
+        
+        
 
     }
+    if(result.empty())
+    {
+        flag = false;
+    }
+    
+    
 
 
 }
 
 template<typename K, typename V>
-bool LSM<K,V>::deleteQuery(K key){  
-    bool toMemcache= this->memcache.deleteEntry(key);
+void LSM<K,V>::deleteQuery(K key){  
+    bool toMemcache= this->memcache->deleteEntry(key);
     if(!toMemcache){
-        create_sst(this->memcache);
-        this->memcache.clearMemcache();
-        this->memcache.deleteEntry(key);
+
+        create_sst(this->memcache->getMemcache());
+        this->memcache->clearMemcache();
+        this->memcache->deleteEntry(key);
     }
 
 }

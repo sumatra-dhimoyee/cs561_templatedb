@@ -64,7 +64,7 @@ Entry<K,V>& MemCache<K,V>::getEntry(K key){
 template<typename K,typename V>
 bool MemCache<K,V>::entryExist(K key){
     for (Entry<K, V>& entry : this->memcache){
-        if (entry.key == key){
+        if (entry.key == key && !entry.tomb){
             return true;
         }
     }

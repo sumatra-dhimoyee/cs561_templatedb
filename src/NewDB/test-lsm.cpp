@@ -10,6 +10,8 @@
 #include "BloomFilter/BloomFilter.cpp"
 #include "BloomFilter/murmurhash.cpp"
 #include "BloomFilter/murmurhash.h"
+#include "memcache.hpp"
+#include "memcache.cpp"
 
 #include <vector>
 template<typename K,typename V>
@@ -62,7 +64,20 @@ int main()
     LeveledLSM.create_sst(entries_11);
     LeveledLSM.create_sst(entries_12);
     
-    LeveledLSM.pointQuery(401);
+    std::vector<int> tempVal;
+    bool flag= true;
+    //LeveledLSM.pointQuery(405, tempVal, flag);
+    
+    LeveledLSM.deleteQuery(405);
+    LeveledLSM.pointQuery(405, tempVal, flag);
+    if(flag)
+    {
+        for(int i=0; i<tempVal.size(); i++){
+        std::cout << "Element at Key 136 is " << tempVal[i] << std::endl;
+    }
+    }
+    
+
 
 
 // // -----------------------------test tiered lsm --------------------------------------
