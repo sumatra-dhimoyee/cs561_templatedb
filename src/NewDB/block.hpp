@@ -14,7 +14,8 @@
 #include "fencepointer.hpp"
 #include "BloomFilter/BloomFilter.h"
 
-
+int READ_IO = 0;
+int WRITE_IO = 0;
 
 namespace templatedb
 {

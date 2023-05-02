@@ -1,4 +1,4 @@
-#include "lsm.hpp"
+#include "level.hpp"
 
 using namespace templatedb;
 
@@ -7,14 +7,18 @@ LSM<K,V>::LSM(size_t _mem_size, uint8_t _T_ratio, bool _leveled, int _bf_num_ele
 {
 
     this->mem_size = _mem_size;
-    this-> T_ratio = _T_ratio;
+    this->T_ratio = _T_ratio;
     this->leveled = _leveled;
     this->bf_num_elem = _bf_num_elem;
     this->bf_num_bits_per_elem = _bf_num_bits_per_elem;
     if (this->leveled)
     {this->no_runs = 1;}
     else
-    {this->no_runs = T_ratio;}
+    {
+        this->no_runs = this->T_ratio;
+        
+    }
+    
 }
 
 template<typename K, typename V>
@@ -38,10 +42,11 @@ void LSM<K,V>::create_sst(std::vector<Entry<K,V>> entries)
         {
             if(i < this->levels.size())
             {
-                std::cout<<"_______ADDING _1_____________"<<std::endl;
+                // std::cout<<"_______ADDING _1_____________"<<std::endl;
                 x = levels[i].add_sst(sst, this->leveled, fp, bf);
                 if(!x)
                 {
+                    
                     sst = levels[i].merge_runs(fp, bf);
                     levels[i].clear();
                     _level_size = _level_size*this->T_ratio;
@@ -57,7 +62,7 @@ void LSM<K,V>::create_sst(std::vector<Entry<K,V>> entries)
                 
             }
             else{
-                std::cout<<"_______ADDING _2_____________ "<<i <<std::endl;
+                // std::cout<<"_______ADDING _2_____________ "<<i <<std::endl;
                 // _level_size = (this->mem_size+extra_size) * pow(this->T_ratio, i+1);
                 sst.max_size = _run_size;
                 Level<K,V> lvl = Level<K,V>(sst, this->no_runs, _level_size, i, fp, bf);
@@ -66,7 +71,7 @@ void LSM<K,V>::create_sst(std::vector<Entry<K,V>> entries)
                 
             }
         }
-    std::cout<<"NUM LEVELS: "<<this->levels.size()<<std::endl;
+    // std::cout<<"NUM LEVELS: "<<this->levels.size()<<std::endl;
     
 }
 
@@ -168,3 +173,4 @@ template<typename K, typename V>
 bool LSM<K,V>::deleteRangeQuery(K minkey, K maxkey){
 
 }
+

@@ -18,18 +18,20 @@ namespace templatedb
     template<typename K, typename V>
     class LSM
     {
-        private:
+        // private:
+        public:
         std::vector<Level<K,V>> levels;
         // MemCache<K,V> memcache;
         uint8_t no_levels;
-        uint8_t no_runs;
+        int no_runs;
         size_t mem_size;
         uint8_t T_ratio;
         bool leveled;
         int bf_num_elem;
         int bf_num_bits_per_elem;
 
-        public:
+        
+        // public:
         LSM(size_t _mem_size, uint8_t T_ratio, bool leveled, int _bf_num_elem, int _bf_num_bits_per_elem);
         void create_sst(std::vector<Entry<K,V>> entries);
 
@@ -39,14 +41,6 @@ namespace templatedb
         //create function which takes the data in memcache after it's full add it to the levels. 
 
         std::vector<V> get(K key);
-        MemCache<K,V> createMemcache();
-        void put(K key, V value);
-        bool update(K key, V value);
-        V pointQuery(K key);
-        bool deleteQuery(K key);
-        std::vector<V> rangeQuery(K minkey, K maxkey);
-        bool deleteRangeQuery(K minkey, K maxkey);
-        bool garbageCollection();
         
 
     };
