@@ -15,12 +15,12 @@
 template<typename K,typename V>
 vector<Entry<K,V>> generate_vector(int low, int high)
 {
-    std::vector<Entry<int,int>> entries;
+    std::vector<Entry<int,string>> entries;
     for(int i = low; i < high;  i++)
     {
 
         auto TS = std::chrono::system_clock::now();
-        templatedb::Entry<int, int> temp = templatedb::Entry<int, int>(i, {i+1, i+2, i+3}, false, TS);
+        templatedb::Entry<int, string> temp = templatedb::Entry<int, string>(i, {to_string(i+1), to_string(i+2), to_string(i+3)}, false, TS);
         
         entries.push_back(temp);
     }
@@ -33,18 +33,18 @@ int main()
     
     
 
-    std::vector<Entry<int,int>> entries_1 = generate_vector<int,int>(0,163);
-    std::vector<Entry<int,int>> entries_2 = generate_vector<int,int>(200,363);
-    std::vector<Entry<int,int>> entries_3 = generate_vector<int,int>(400,563);
-    std::vector<Entry<int,int>> entries_4 = generate_vector<int,int>(600,763);
-    std::vector<Entry<int,int>> entries_5 = generate_vector<int,int>(800,963);
-    std::vector<Entry<int,int>> entries_6 = generate_vector<int,int>(1000,1163);
-    std::vector<Entry<int,int>> entries_7 = generate_vector<int,int>(1200,1363);
-    std::vector<Entry<int,int>> entries_8 = generate_vector<int,int>(1400,1563);
-    std::vector<Entry<int,int>> entries_9 = generate_vector<int,int>(1600,1763);
-    std::vector<Entry<int,int>> entries_10 = generate_vector<int,int>(1800,1963);
-    std::vector<Entry<int,int>> entries_11 = generate_vector<int,int>(2000,2163);
-    std::vector<Entry<int,int>> entries_12= generate_vector<int,int>(2200,2363);
+    std::vector<Entry<int,string>> entries_1 = generate_vector<int,string>(0,163);
+    std::vector<Entry<int,string>> entries_2 = generate_vector<int,string>(200,363);
+    std::vector<Entry<int,string>> entries_3 = generate_vector<int,string>(400,563);
+    std::vector<Entry<int,string>> entries_4 = generate_vector<int,string>(600,763);
+    std::vector<Entry<int,string>> entries_5 = generate_vector<int,string>(800,963);
+    std::vector<Entry<int,string>> entries_6 = generate_vector<int,string>(1000,1163);
+    std::vector<Entry<int,string>> entries_7 = generate_vector<int,string>(1200,1363);
+    std::vector<Entry<int,string>> entries_8 = generate_vector<int,string>(1400,1563);
+    std::vector<Entry<int,string>> entries_9 = generate_vector<int,string>(1600,1763);
+    std::vector<Entry<int,string>> entries_10 = generate_vector<int,string>(1800,1963);
+    std::vector<Entry<int,string>> entries_11 = generate_vector<int,string>(2000,2163);
+    std::vector<Entry<int,string>> entries_12= generate_vector<int,string>(2200,2363);
 
 // ----------------------------test leveled lsm -------------------------------------
 /*
@@ -67,7 +67,7 @@ int main()
 
 // -----------------------------test tiered lsm --------------------------------------
 
-templatedb::LSM<int,int> TieredLSM = templatedb::LSM<int,int>(4*1024, 3, false, 1000, 10);
+templatedb::LSM<int,string> TieredLSM = templatedb::LSM<int,string>(4*1024, 3, false, 1000, 10);
 
     TieredLSM.create_sst(entries_1);
     TieredLSM.create_sst(entries_2);
@@ -81,5 +81,6 @@ templatedb::LSM<int,int> TieredLSM = templatedb::LSM<int,int>(4*1024, 3, false, 
     // int j = TieredLSM.levels[1].get_block_index(k, 450);
     // std::cout<<k<<std::endl;
     std::cout<<WRITE_IO<<std::endl;
+    std::cout << "Size of str object: " << sizeof(int) << " bytes" << std::endl;
 
 }

@@ -40,7 +40,7 @@ bool Level<K,V> ::add_sst(SST<K,V> sst, bool leveled, std::vector<zone<K>>& fp, 
     if(leveled)
     {
         
-        SST<K,V> merged_sst = Build_SST<int, int>::merge_sst(this->sst_vector[0], sst, fp, bf);
+        SST<K,V> merged_sst = Build_SST<K,V>::merge_sst(this->sst_vector[0], sst, fp, bf);
         // std::cout<<"SST SIZE "<< merged_sst.offset<<" SST MAX SIZE "<<merged_sst.max_size<<std::endl;
         // std::cout<<merged_sst.overflow<<std::endl;
         this->clear();
@@ -91,7 +91,7 @@ SST<K,V> Level<K,V>::merge_runs(std::vector<zone<K>>& fp, BF::BloomFilter& bf)
     while(i-1 >= 0)
     {
         // std::cout<<"LEVELLLL"<<std::endl;
-    SST<K,V> sst = Build_SST<int,int>::merge_sst(this->sst_vector[i-1], merged_sst, fp, bf);
+    SST<K,V> sst = Build_SST<K,V>::merge_sst(this->sst_vector[i-1], merged_sst, fp, bf);
     merged_sst = sst;
     i--;
     
