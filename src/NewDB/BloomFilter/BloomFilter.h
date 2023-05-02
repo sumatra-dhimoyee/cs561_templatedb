@@ -1,3 +1,6 @@
+#ifndef _BF_H_
+#define _BF_H_
+
 #include <vector>
 #include <string>
 #include <math.h>
@@ -28,3 +31,5 @@ private:
 };
 
 } // namespace BF
+
+#endif 
