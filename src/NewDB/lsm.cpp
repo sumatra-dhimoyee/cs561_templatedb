@@ -93,7 +93,7 @@ std::vector<V> LSM<K,V>::get(K key)
 template<typename K, typename V>
 MemCache<K,V> LSM<K,V>::createMemcache(){
     std::vector<Entry<K,V>> entries;
-    this->memcache= new MemCache(mem_size, entries);
+    this->memcache= MemCache(this->mem_size, entries);
     return this->memcache;
 
 }
@@ -113,7 +113,7 @@ void LSM<K,V>::put(K key, V val){
 
 template<typename K, typename V>
 bool LSM<K,V>::update(K key, V value){
-    std::vector<V> value;
+    std::vector<V> val;
     value.push_back(val);
     
     bool toMemcache= this->memcache.updateEntry(key, value);
@@ -126,20 +126,21 @@ bool LSM<K,V>::update(K key, V value){
 }
 
 template<typename K, typename V>
-V LSM<K,V>::pointQuery(K key){
+std::vector<V> LSM<K,V>::pointQuery(K key){
     if(this->memcache.entryExist(key)){
-        return this->memcache.getEntry().value[0];
+        return this->memcache.getEntry(key).value;
     }else{
         for(int i=0; i<no_levels; i++){
             int bloomFinder = this->levels[i].bloom_lookup(key);
-            if(bloomFilter!=-1){
+            if(bloomFinder!=-1){
                 int blockIndex= this->levels[i].get_block_index(bloomFinder, key);
                 if(blockIndex!=-1){
                     std::vector<SST<K,V>> sstVector=this->levels[i].get_sst_vector();
                     Block<K,V> tempBlock = sstVector[blockIndex].getBlock();
                     if(tempBlock.entryExist()){
                         Entry<K,V> tempEntry = tempBlock.getEntry();
-                        return tempEntry.value[0];
+                        READ_IO++;
+                        return tempEntry.value;
                     }
                 }
             }
@@ -158,7 +159,7 @@ bool LSM<K,V>::deleteQuery(K key){
     if(!toMemcache){
         create_sst(this->memcache);
         this->memcache.clearMemcache();
-        this->memcache.deleteEntry(key, value);
+        this->memcache.deleteEntry(key);
     }
 
 }
@@ -166,6 +167,7 @@ bool LSM<K,V>::deleteQuery(K key){
 
 template<typename K, typename V>
 std::vector<V> LSM<K,V>::rangeQuery(K minkey, K maxkey){
+    //if maxkey is less than memcache 0
 
 }
 

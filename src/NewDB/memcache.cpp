@@ -48,7 +48,7 @@ int MemCache<K,V>::binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K
 
 template<typename K,typename V>
 Entry<K,V>& MemCache<K,V>::getEntry(K key){
-    int idx=binarySearch(this->memcache, 0, this->memcache.size(), key);
+    int idx=binarySearch(this->memcache, 0, this->memcache.size()-1, key);
     return this->memcache[idx];
 
     // K temp;

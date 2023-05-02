@@ -174,6 +174,102 @@ K  Build_Block<K,V>::block_max()
 
 }
 
+template<typename K, typename V>
+Block<K,V> Build_Block<K,V>::getBlock(){
+    return this->data;
+}
+
+template<typename K, typename V>
+bool Build_Block<K,V>::compareEntries(const Entry<K,V>& a, const Entry<K,V>& b){
+    return a.key<b.key;
+}
+
+template<typename K, typename V>
+int Build_Block<K,V>:: binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key){
+    while(l<=r){
+        int m = (l+r)/2;
+        if(this->data[m].key == key){
+            return m;
+        }
+        if(this->data[m].key < key){
+            l= m+1;
+        }else{
+            r = m-1;
+        }
+    }
+    return -1;
+}
+
+template<typename K, typename V>
+Entry<K,V>& Build_Block<K,V>::getEntry(K key){
+
+    //std::vector<Entry<K,V>> entries=this->data;
+    //int n= sizeof(entries)/sizeof(entries[0]);
+    int isFound= binarySearch(this->data, 0, this->data.size()-1, key);
+    return this->data[isFound];  
+}
+
+template<typename K, typename V>
+bool Build_Block<K,V>::entryExist(K key){
+    // rethink for space
+    //std::vector<Entry<K,V>> entries=this->data;
+    int n= this->data.size();
+    // std::cout << "n is " << n << std::endl;
+    int isFound= binarySearch(this->data, 0, n-1, key);
+    if(isFound!=-1){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
+
+
+template<typename K, typename V>
+Block<K,V> Block<K,V>::getBlock(){
+    return this->data;
+}
+
+template<typename K, typename V>
+int Block<K,V>:: binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key){
+    while(l<=r){
+        int m = (l+r)/2;
+        if(this->data[m].key == key){
+            return m;
+        }
+        if(this->data[m].key < key){
+            l= m+1;
+        }else{
+            r = m-1;
+        }
+    }
+    return -1;
+}
+
+template<typename K, typename V>
+Entry<K,V>& Block<K,V>::getEntry(K key){
+
+    //std::vector<Entry<K,V>> entries=this->data;
+    //int n= sizeof(entries)/sizeof(entries[0]);
+    int isFound= binarySearch(this->data, 0, this->data.size()-1, key);
+    return this->data[isFound];  
+}
+
+template<typename K, typename V>
+bool Block<K,V>::entryExist(K key){
+    // rethink for space
+    //std::vector<Entry<K,V>> entries=this->data;
+    int n= this->data.size();
+    // std::cout << "n is " << n << std::endl;
+    int isFound= binarySearch(this->data, 0, n-1, key);
+    if(isFound!=-1){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 
 
 

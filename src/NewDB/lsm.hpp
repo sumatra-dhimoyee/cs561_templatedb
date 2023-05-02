@@ -21,7 +21,7 @@ namespace templatedb
         // private:
         public:
         std::vector<Level<K,V>> levels;
-        // MemCache<K,V> memcache;
+        MemCache<K,V> memcache;
         uint8_t no_levels;
         int no_runs;
         size_t mem_size;
@@ -29,6 +29,8 @@ namespace templatedb
         bool leveled;
         int bf_num_elem;
         int bf_num_bits_per_elem;
+        int READ_IO = 0;
+        int WRITE_IO = 0;
 
         
         // public:
@@ -41,6 +43,16 @@ namespace templatedb
         //create function which takes the data in memcache after it's full add it to the levels. 
 
         std::vector<V> get(K key);
+        MemCache<K,V> createMemcache();
+        void put(K key, V val);
+        bool update(K key, V value);
+        std::vector<V> pointQuery(K key);
+        bool deleteQuery(K key);
+        std::vector<V> rangeQuery(K minkey, K maxkey);
+        bool deleteRangeQuery(K minkey, K maxkey);
+        
+        
+
         
 
     };

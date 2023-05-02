@@ -37,6 +37,7 @@ namespace templatedb
         int get_block_index(int sorted_run, K key);
         int lookup(int sorted_run, int block_index, K key);
         int bloom_lookup(K key);
+        std::vector<SST<K,V>> get_sst_vector();
 
 
 

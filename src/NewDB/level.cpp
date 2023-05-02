@@ -149,3 +149,8 @@ int Level<K,V>::bloom_lookup( K key)
     }
     return -1;
 }
+
+template<typename K, typename V>
+std::vector<SST<K,V>> Level<K,V>::get_sst_vector(){
+    return this->sst_vector;
+}

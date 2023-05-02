@@ -47,7 +47,7 @@ int main()
     std::vector<Entry<int,int>> entries_12= generate_vector<int,int>(2200,2363);
 
 // ----------------------------test leveled lsm -------------------------------------
-/*
+
     templatedb::LSM<int,int> LeveledLSM = templatedb::LSM<int,int>(4*1024, 3, true, 1000, 10);
     LeveledLSM.create_sst(entries_1);
     LeveledLSM.create_sst(entries_2);
@@ -62,24 +62,24 @@ int main()
     LeveledLSM.create_sst(entries_11);
     LeveledLSM.create_sst(entries_12);
     
-  
-*/
+    LeveledLSM.pointQuery(401);
 
-// -----------------------------test tiered lsm --------------------------------------
 
-templatedb::LSM<int,int> TieredLSM = templatedb::LSM<int,int>(4*1024, 3, false, 1000, 10);
+// // -----------------------------test tiered lsm --------------------------------------
 
-    TieredLSM.create_sst(entries_1);
-    TieredLSM.create_sst(entries_2);
-    TieredLSM.create_sst(entries_3);
-    // TieredLSM.create_sst(entries_4);
-    // TieredLSM.create_sst(entries_5);
-    // TieredLSM.create_sst(entries_6);
-    std::cout<<TieredLSM.levels.size()<<std::endl;
-    // std::cout<<TieredLSM.levels[i].<<std::endl;
-    // int k = TieredLSM.levels[1].bloom_lookup(450);
-    // int j = TieredLSM.levels[1].get_block_index(k, 450);
-    // std::cout<<k<<std::endl;
-    std::cout<<WRITE_IO<<std::endl;
+// templatedb::LSM<int,int> TieredLSM = templatedb::LSM<int,int>(4*1024, 3, false, 1000, 10);
+
+//     TieredLSM.create_sst(entries_1);
+//     TieredLSM.create_sst(entries_2);
+//     TieredLSM.create_sst(entries_3);
+//     // TieredLSM.create_sst(entries_4);
+//     // TieredLSM.create_sst(entries_5);
+//     // TieredLSM.create_sst(entries_6);
+//     std::cout<<TieredLSM.levels.size()<<std::endl;
+//     // std::cout<<TieredLSM.levels[i].<<std::endl;
+//     // int k = TieredLSM.levels[1].bloom_lookup(450);
+//     // int j = TieredLSM.levels[1].get_block_index(k, 450);
+//     // std::cout<<k<<std::endl;
+//     std::cout<<WRITE_IO<<std::endl;
 
 }
