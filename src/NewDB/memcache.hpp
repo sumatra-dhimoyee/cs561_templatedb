@@ -32,8 +32,9 @@ namespace templatedb {
             bool deleteEntry(K key);
             bool readRange(K startKey, K endKey);
             bool deleteRange(K startKey, K endKey);
-            bool compareEntries (Entry<K,V> i,Entry<K,V> j);
-            void sort();
+            bool compareEntries (Entry<K,V>& i,Entry<K,V>& j);
+            int binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key);
+            void sortEntries();
             vector<Entry<K,V>>& getMemcache();
             int getBufferSize();
             bool isEmpty();

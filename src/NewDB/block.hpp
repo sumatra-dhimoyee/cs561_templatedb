@@ -54,7 +54,7 @@ namespace templatedb
         }
         Block<K,V> getBlock();
         bool compareEntries(const Entry<K,V>& a, const Entry<K,V>& b);
-        int binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key);
+        int binarySearch(std::vector<Entry<K,V> > entries, int l, int r, K key);
 
     };
 
