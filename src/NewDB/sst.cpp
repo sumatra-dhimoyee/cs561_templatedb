@@ -11,7 +11,8 @@ Build_SST<K,V> ::Build_SST(std::vector<Entry<K,V>> _data, size_t _max_size, uint
     this->max_size = _max_size;
     // this->run = _run;
     this->level = _level;
-    this->size = sizeof(size_t)*2 +sizeof(uint8_t) +sizeof(bool);
+    // this->size = sizeof(size_t)*2 +sizeof(uint8_t) +sizeof(bool);
+    this->size = 0;
     this->overflow = _overflow;
     int curr_block_size = 0;
     int perm_size = _data.size();

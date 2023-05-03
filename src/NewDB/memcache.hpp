@@ -15,14 +15,14 @@ namespace templatedb {
         private:   
             vector<Entry<K,V>> memcache;
             size_t maxBufferSize;
-            //size_t bufferSize;
+            size_t bufferSize;
 
 
         public:
             MemCache(size_t _bufferSize, vector<Entry<K, V>> _memcache){
                 memcache=_memcache;
                 maxBufferSize=_bufferSize;
-                //bufferSize=0;
+                bufferSize=0;
                 
             }
             bool put(K key, std::vector<V> value);

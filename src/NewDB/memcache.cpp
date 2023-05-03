@@ -11,44 +11,60 @@ template<typename K,typename V>
 bool MemCache<K,V>::put(K key, std::vector<V> value){
 
     size_t entrySize = sizeof(K)+sizeof(std::chrono::time_point<std::chrono::system_clock>) + sizeof(bool) + sizeof(V)*value.size();
-    std::cout<<"BUFFER SIZE: "<<this->maxBufferSize<<std::endl;
-  
-    if(entrySize <this->maxBufferSize){
+    // std::cout<<"BUFFER SIZE: "<<this->maxBufferSize<<std::endl;
+//   std::cout<<"ENTRY SIZE: "<<entrySize<<std::endl;
+    if((this->bufferSize + entrySize) <= this->maxBufferSize){
         if(this->entryExist(key)){
             this->updateEntry(key, value);
+            this->bufferSize = this->bufferSize +entrySize;
             return true;
         }
         Entry<K,V> entry= Entry<K,V>(key, value, false, std::chrono::system_clock::now());
         this->memcache.push_back(entry);
+        this->bufferSize = this->bufferSize +entrySize;
         //this->bufferSize+=entrySize;
         this->sortEntries();
         return true;
     }
     else{
-        std::cout<<"FINAL BUFFER SIZE: "<<this->memcache.size()<<std::endl;
+        // std::cout<<"FINAL BUFFER SIZE: "<<this->memcache.size()<<std::endl;
         return false;
     }
 }
 
 template<typename K, typename V>
 int MemCache<K,V>::binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key){
+    int i = 0;
     while(l<=r){
-        int m = l+(r-1)/2;
+        // std::cout<<"I am here 6 "<< l<<" "<< entries[l].key <<"  "<<r<<" "<< entries[r].key<<" "<<key<< std::endl;
+
+        int m = l+(r-l)/2;
+        // std::cout<<"key "<< m<<" " <<entries[m].key<<  std::endl;
+        
         if(entries[m].key == key){
             return m;
         }
         if(entries[m].key < key){
+            //  std::cout<<"key -1 "<< entries[m].key<<  std::endl;
             l= m+1;
+            //  std::cout<<"key -1 "<< entries[l].key<<  std::endl;
         }else{
+            //  std::cout<<"key -2 "<< entries[m].key<<  std::endl;
             r = m-1;
         }
+        // if ( i == 6)
+        //     break;
+        i++;
+        
     }
     return -1;
 }
 
 template<typename K,typename V>
 Entry<K,V>& MemCache<K,V>::getEntry(K key){
-    int idx=binarySearch(this->memcache, 0, this->memcache.size(), key);
+    // std::cout<<"I am here 5"<<std::endl;
+    int idx=binarySearch(this->memcache, 0, this->memcache.size()-1, key);
+    
     return this->memcache[idx];
 
     // K temp;
@@ -63,11 +79,22 @@ Entry<K,V>& MemCache<K,V>::getEntry(K key){
 
 template<typename K,typename V>
 bool MemCache<K,V>::entryExist(K key){
-    for (Entry<K, V>& entry : this->memcache){
-        if (entry.key == key){
+    // std::cout<<"I AM HERE 5 "<< this->memcache.size()<<std::endl;
+    for(int i = 0; i < this->memcache.size(); i++)
+    {
+        // std::cout<<"I AM HERE 6"<<std::endl;
+        if (this->memcache[i].key == key){
             return true;
         }
+
     }
+    //  std::cout<<"I AM HERE 7"<<std::endl;
+    // for (Entry<K, V> entry : this->memcache){
+    //     std::cout<<"I AM HERE 6"<<std::endl;
+    //     if (entry.key == key && !entry.tomb){
+    //         return true;
+    //     }
+    // }
     return false;
 }
 
@@ -95,22 +122,38 @@ bool MemCache<K,V>::updateEntry(K key, std::vector<V> value){
 
 template<typename K,typename V>
 bool MemCache<K,V>::deleteEntry(K key){
+    
     try {
+        // std::cout<<"I AM HERE 3"<<std::endl;
         if(this->entryExist(key)){
+            
             Entry<K, V>& entry = this->getEntry(key);
             entry.tomb = true;
             entry.TS= std::chrono::system_clock::now();
             std::cout<<"Inside"<<std::endl;
+            return true;
         }else{
-            std::vector<V> value;
-            V val = 0;
-            value.push_back(val);
-            Entry<K,V> entry= Entry<K,V>(key, value, true, std::chrono::system_clock::now());
-            this->memcache.push_back(entry);
-            //this->bufferSize+=entrySize;
-            this->sortEntries();
+            
+            std::vector<V> value = {};
+            size_t entrySize = sizeof(K)+sizeof(std::chrono::time_point<std::chrono::system_clock>) + sizeof(bool) + sizeof(V)*value.size();
+            // V val = 0;
+            // value.push_back(val);
+            if(this->bufferSize + entrySize <= this->maxBufferSize)
+            {
+                Entry<K,V> entry= Entry<K,V>(key, value, true, std::chrono::system_clock::now());
+                // std::cout<<"I AM HERE 4"<<std::endl;
+                this->memcache.push_back(entry);
+                //this->bufferSize+=entrySize;
+                this->sortEntries();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
         }
-        return true;
+        
     }
     catch (const std::exception& e) {
 
@@ -174,7 +217,7 @@ vector<V>& MemCache<K,V>::buildIntValueVector(){
 template<typename K,typename V>
 void MemCache<K,V>::clearMemcache(){
     this->memcache.clear();
-    //this->bufferSize=0;
+    this->bufferSize=0;
 }
 
 template<typename K,typename V>

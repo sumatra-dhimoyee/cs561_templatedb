@@ -46,13 +46,18 @@ namespace templatedb
         size_t offset;
         
         //add fence pointers later
-        Block(std::vector<Entry<K,V>> _data ,int _offset)
+        Block(std::vector<Entry<K,V> > _data ,int _offset)
         {
             data = _data;
             // keys = _keys;
             // values = _values;
             offset = _offset;
         }
+        Block<K,V> getBlock();
+        bool compareEntries(const Entry<K,V>& a, const Entry<K,V>& b);
+        Entry<K,V>& getEntry(K key);
+        int binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key);
+        bool entryExist(K Key);
 
     };
 
@@ -78,6 +83,11 @@ namespace templatedb
         Block<K,V> build();
         K block_min();
         K block_max();
+        Block<K,V> getBlock();
+        bool compareEntries(const Entry<K,V>& a, const Entry<K,V>& b);
+        Entry<K,V>& getEntry(K key);
+        int binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key);
+        bool entryExist(K Key);
 
     };
 

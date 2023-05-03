@@ -143,9 +143,21 @@ int Level<K,V>::bloom_lookup( K key)
     //implement bloomfilter lookup
     for(int i = this->BF.size() - 1; i >= 0; i--)
     {
-        bool query_result = this->BF[i].query(std::to_string(key));
+        bool query_result;
+         try {
+                query_result = this->BF[i].query(key);
+            } catch(const std::exception& e) {
+                    
+                query_result = this->BF[i].query(key);
+            }
+         
         if(query_result)
             return i;
     }
     return -1;
+}
+
+template<typename K, typename V>
+std::vector<SST<K,V>> Level<K,V>::get_sst_vector(){
+    return this->sst_vector;
 }

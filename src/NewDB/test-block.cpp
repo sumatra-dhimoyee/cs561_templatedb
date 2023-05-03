@@ -83,7 +83,7 @@ int main()
     {
 
         auto TS = std::chrono::system_clock::now();
-        templatedb::Entry<int, int> temp = templatedb::Entry<int, int>(i, {1, 2, 3}, false, TS);
+        templatedb::Entry<int, int> temp = templatedb::Entry<int, int>(i, {i, i+1, i+3}, false, TS);
         
         entries.push_back(temp);
     }
@@ -92,12 +92,24 @@ int main()
     
     std::cout<<"INDEX: "<<builder_two.enteries_kept_size()<<std::endl;
     builder_two.print_block();
+    //Block<int,int> block1= builder_two.build();
+    templatedb::Entry<int, int>& en1= builder_two.getEntry(136);
+    std::cout << en1.value.size() << std::endl;
+    std::cout << "Value Exist: " << builder_two.entryExist(180) << std::endl;
+    for(int i=0; i<en1.value.size(); i++){
+        std::cout << "Element at Key 136 is " << en1.value[i] << std::endl;
+    }
+    
+
+    
+    
     bool query_result = bf_3.query(std::to_string(35)); // Query the filter with "hello"
     if (query_result) {
         std::cout << "The element may be in the filter." << std::endl;
     } else {
         std::cout << "The element is definitely not in the filter." << std::endl;
     }
+
     
 
 
