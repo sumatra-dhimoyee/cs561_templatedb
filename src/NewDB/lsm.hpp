@@ -45,7 +45,7 @@ namespace templatedb
         std::vector<V> get(K key);
         //MemCache<K,V> createMemcache();
         void put(K key, std::vector<V> value);
-        bool update(K key, V value);
+        void update(K key, std::vector<V> value);
         void pointQuery(K key, std::vector<V>& result,bool& flag);
         void deleteQuery(K key);
         std::vector<V> rangeQuery(K minkey, K maxkey);

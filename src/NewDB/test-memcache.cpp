@@ -55,6 +55,9 @@ int main(){
     std::vector<int> val4;
     val4.push_back(66);
     memcache.put(66,val4);
+    std::vector<int> val9;
+    val9.push_back(69);
+    memcache.put(3,val9);
     memcache.printMemcache();
     memcache.deleteEntry(2);
     memcache.deleteEntry(3);
@@ -63,6 +66,9 @@ int main(){
     memcache.updateEntry(4, val5);
     memcache.updateEntry(2, val5);
     std::cout<<"After the delete "<<std::endl;
+    memcache.printMemcache();
+    std::cout<<"After the sort "<<std::endl;
+    memcache.sortEntries();
     memcache.printMemcache();
 
 

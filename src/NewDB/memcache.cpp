@@ -23,7 +23,7 @@ bool MemCache<K,V>::put(K key, std::vector<V> value){
         this->memcache.push_back(entry);
         this->bufferSize = this->bufferSize +entrySize;
         //this->bufferSize+=entrySize;
-        this->sortEntries();
+        //this->sortEntries();
         return true;
     }
     else{
@@ -63,7 +63,16 @@ int MemCache<K,V>::binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K
 template<typename K,typename V>
 Entry<K,V>& MemCache<K,V>::getEntry(K key){
     // std::cout<<"I am here 5"<<std::endl;
-    int idx=binarySearch(this->memcache, 0, this->memcache.size()-1, key);
+    //int idx=binarySearch(this->memcache, 0, this->memcache.size()-1, key);
+    int idx=-1;
+    for(int i = 0; i < this->memcache.size(); i++)
+    {
+        // std::cout<<"I AM HERE 6"<<std::endl;
+        if (this->memcache[i].key == key){
+            idx=i;
+        }
+
+    }
     
     return this->memcache[idx];
 
@@ -98,6 +107,8 @@ bool MemCache<K,V>::entryExist(K key){
     return false;
 }
 
+
+
 template<typename K,typename V>
 bool MemCache<K,V>::updateEntry(K key, std::vector<V> value){
     try {
@@ -108,7 +119,7 @@ bool MemCache<K,V>::updateEntry(K key, std::vector<V> value){
             }
             entry.value = value;
             entry.TS= std::chrono::system_clock::now();
-            this->sortEntries();
+            //this->sortEntries();
         }else{
             this->put(key, value);
         }
@@ -143,8 +154,9 @@ bool MemCache<K,V>::deleteEntry(K key){
                 Entry<K,V> entry= Entry<K,V>(key, value, true, std::chrono::system_clock::now());
                 // std::cout<<"I AM HERE 4"<<std::endl;
                 this->memcache.push_back(entry);
+                //this->bufferSize = this->bufferSize +entrySize;
                 //this->bufferSize+=entrySize;
-                this->sortEntries();
+                //this->sortEntries();
                 return true;
             }
             else
@@ -219,6 +231,8 @@ void MemCache<K,V>::clearMemcache(){
     this->memcache.clear();
     this->bufferSize=0;
 }
+
+
 
 template<typename K,typename V>
 void MemCache<K,V>::printMemcache(){

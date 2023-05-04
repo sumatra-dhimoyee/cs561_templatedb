@@ -114,6 +114,7 @@ void LSM<K,V>::put(K key, std::vector<V> value){
     
     if(!toMemcache){
         // std::cout<<"creating sst"<<std::endl;
+        this->memcache->sortEntries();
         create_sst(this->memcache->getMemcache());
         this->memcache->clearMemcache();
         this->memcache->put(key, value);
@@ -122,15 +123,15 @@ void LSM<K,V>::put(K key, std::vector<V> value){
 
 
 template<typename K, typename V>
-bool LSM<K,V>::update(K key, V value){
-    std::vector<V> val;
-    value.push_back(val);
+void LSM<K,V>::update(K key, std::vector<V> value){
+    // std::vector<V> val;
+    // value.push_back(val);
     
-    bool toMemcache= this->memcache.updateEntry(key, value);
+    bool toMemcache= this->memcache->updateEntry(key, value);
     if(!toMemcache){
-        create_sst(this->memcache);
-        this->memcache.clearMemcache();
-        this->memcache.updateEntry(key, value);
+        create_sst(this->memcache->getMemcache());
+        this->memcache->clearMemcache();
+        this->memcache->updateEntry(key, value);
     }
 
 }
@@ -206,6 +207,7 @@ void LSM<K,V>::deleteQuery(K key){
 template<typename K, typename V>
 std::vector<V> LSM<K,V>::rangeQuery(K minkey, K maxkey){
     //if maxkey is less than memcache 0
+    
 
 }
 

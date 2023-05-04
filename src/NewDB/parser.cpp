@@ -29,7 +29,7 @@ int main() {
     bool leveled = true ;
     templatedb::LSM<string,string> LeveledLSM = templatedb::LSM<string,string>(mem_size, T_ratio, leveled, bf_num_elem, bf_num_bits_per_elem);
     // Open the input file
-    ifstream infile("workload.txt");
+    ifstream infile("update.txt");
 
     // Create a hash table to store the key-value pairs
     
@@ -60,13 +60,14 @@ int main() {
             case 'I':
                 // table[key] = value;
                 // cout<<op<< " "<<key<<" "<<value<<endl;
-                \
+                
                 
                 LeveledLSM.put(key, value);
 
                 break;
             case 'U':
                 // cout<<op<< " "<<key<<" "<< value<<endl;
+                LeveledLSM.update(key, value);
                 
                 break;
             case 'D':
