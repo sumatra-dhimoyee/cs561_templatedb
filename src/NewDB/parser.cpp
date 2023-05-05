@@ -71,12 +71,14 @@ int main() {
                 
                 break;
             case 'R':
-                LeveledLSM.rangeQuery(key, line.substr(pos + 1));
+                //LeveledLSM.rangeQuery(key, line.substr(pos + 1));
+                LeveledLSM.deleteRangeQuery(key, line.substr(pos + 1));
                 // cout<<op<< " "<<key<<" "<< value<<endl;
                 //LeveledLSM.update(key, value);
                 
                 break;
             case 'D':
+                LeveledLSM.deleteRangeQuery(key, line.substr(pos + 1));
                 // cout<<op<< " "<<key<<" "<< endl;
                 // if (table.erase(key)) {
                 //     cout << "Deleted key: " << key << endl;

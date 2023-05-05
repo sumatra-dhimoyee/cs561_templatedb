@@ -58,6 +58,8 @@ namespace templatedb
         Entry<K,V>& getEntry(K key);
         int binarySearch(std::vector<Entry<K,V>> entries, int l, int r, K key);
         bool entryExist(K Key);
+        K  block_min();
+        K  block_max();
 
     };
 

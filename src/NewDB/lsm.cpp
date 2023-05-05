@@ -216,7 +216,7 @@ struct compare {
 template<typename K, typename V>
 void LSM<K,V>::rangeQuery(K minkey, K maxkey){
     //if maxkey is less than memcache 0
-    std::cout<<"HERE1"<<std::endl;
+    //std::cout<<"HERE1"<<std::endl;
     std::vector<Entry<K,V>> memTemp;
     for(Entry<K,V>& entry: this->memcache->getMemcache()){
         if(entry.key>=minkey || entry.key<=maxkey){
@@ -227,7 +227,9 @@ void LSM<K,V>::rangeQuery(K minkey, K maxkey){
     priority_queue<pair<Entry<K,V>, vector<int>>, vector<pair<Entry<K,V>, vector<int>>>, compare<K,V>> pq; 
 
     //std::cout<<"HERE2"<<std::endl;
-    std::vector<int> vectorMem= {0, 0, 0, 0};
+    std::vector<int> vectorMem;
+    vectorMem.resize(4, 0);
+    vectorMem[0]=-1;
     //std::cout<<"AWW1"<<std::endl;
     pq.push(make_pair(memTemp[0], vectorMem));
 
@@ -235,9 +237,10 @@ void LSM<K,V>::rangeQuery(K minkey, K maxkey){
     //std::cout<<"AWW"<<std::endl;
     std::cout<<"Level: "<< this->levels.size() <<std::endl;
     for (int i = 0; i < this->levels.size(); i++) { 
-        std::vector<int> idx= {0, 0, 0, 0};
-        idx[0]= i+1;
-        std::cout<< "idx: " << idx[0]<<std::endl;
+        std::vector<int> idx;
+        idx.resize(4, 0);
+        //idx[0]= ;
+        //std::cout<< "idx: " << idx[0]<<std::endl;
         std::cout<<"HERE3"<<std::endl;
         Entry<K,V> tempEntry = this->levels[i].get_sst_vector()[0].block_vector[0].data[0];
         pq.push(make_pair(tempEntry, idx));
@@ -255,12 +258,12 @@ void LSM<K,V>::rangeQuery(K minkey, K maxkey){
 
         for(int i=0; i<tempEntry1.value.size(); i++){
             std::cout<<tempEntry1.value[i]<<std::endl;
-            std::cout<<"HERE5"<<std::endl;
+            //std::cout<<"HERE5"<<std::endl;
         }
 
-        for(int i=0; i<idx1.size(); i++){
-            std::cout<<"idx1: " <<i << idx1[i]<<std::endl;
-        }
+        // for(int i=0; i<idx1.size(); i++){
+        //     std::cout<<"idx1: " <<i << idx1[i]<<std::endl;
+        // }
 
         std::cout<<"HERE6"<<std::endl;
  
@@ -270,8 +273,8 @@ void LSM<K,V>::rangeQuery(K minkey, K maxkey){
         // If the current element is not the last element of the array, 
         // push the next element of the array into the heap 
         //std::cout<<this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data.size()<<std::endl;
-        std::cout<<"HERE7"<<std::endl;
-        if(idx1[0]==0 && (idx1[1])+1<memTemp.size()){
+        //std::cout<<"HERE7"<<std::endl;
+        if(idx1[0]==-1 && (idx1[1]+1)<memTemp.size()){
             std::cout<<"If1"<<std::endl;
             idx1[1]=idx1[1]+1;
             pq.push(make_pair(memTemp[idx1[1]], idx1));

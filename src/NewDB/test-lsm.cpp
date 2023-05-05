@@ -95,7 +95,10 @@ int main()
     // LeveledLSM.deleteQuery("405");
     // std::cout<<"HERE1"<<std::endl;
     LeveledLSM.pointQuery("2", tempVal, flag);
+    //LeveledLSM.deleteQuery("602");
+    //LeveledLSM.pointQuery("602", tempVal, flag);
     LeveledLSM.rangeQuery("601", "609");
+    //LeveledLSM.deleteRangeQuery("601", "609");
     if(flag)
     {
         for(int i=0; i<tempVal.size(); i++){

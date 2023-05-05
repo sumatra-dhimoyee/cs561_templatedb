@@ -170,8 +170,46 @@ K  Build_Block<K,V>::block_min()
     return min_key;
 
 }
+
+template<typename K, typename V>
+K  Block<K,V>::block_min()
+{
+    
+    K min_key = this->data[0].key;
+    for (auto entry : this->data)
+    {
+        if (entry.key < min_key)
+        {
+            if(!entry.tomb){
+                min_key = entry.key;
+            }
+            
+        }
+    }
+    return min_key;
+
+}
+
 template<typename K, typename V>
 K  Build_Block<K,V>::block_max()
+{
+    
+    K max_key = this->data[0].key;
+    for (auto entry : this->data)
+    {
+        if (entry.key > max_key)
+        {
+            if(!entry.tomb){
+                max_key = entry.key;
+            } 
+        }
+    }
+    return max_key;
+
+}
+
+template<typename K, typename V>
+K  Block<K,V>::block_max()
 {
     
     K max_key = this->data[0].key;
