@@ -350,13 +350,16 @@ void LSM<K,V>::deleteRangeQuery(K minkey, K maxkey){
     for(int i=0; i<this->levels.size(); i++){
         std::vector<SST<K,V>> sstVector=this->levels[i].get_sst_vector();
         for(int j=0; j<sstVector.size(); j++){
-            std::vector<Block<K,V>> blockVector = sstVector[j];
-            for(int k=0; k<blockVector.size(); k++){
-                K blockmin = blockVector[k].block_min();
-                K blockmax = blockVector[k].block_max();
+            SST<K,V> blockVector = sstVector[j];
+            for(int k=0; k<blockVector.block_vector.size(); k++){
+                K blockmin = blockVector.block_vector[k].block_min();
+                K blockmax = blockVector.block_vector[k].block_max();
                 if(blockmin>=minkey && blockmin<=maxkey && blockmax<=maxkey && blockmax>=minkey){
-                    for(K m=blockmin; m<=blockmax; m++){
-                        this->deleteQuery(m);
+                    // for(Entry<K,V>& entry : blockVector[k]){
+                    //     this->deleteQuery(entry.key)
+                    // }
+                    for(int m= std::stoi(blockmin); m<= std::stoi(blockmax); m++){
+                        this->deleteQuery(std::to_string(m));
                     }
                 }
             }
