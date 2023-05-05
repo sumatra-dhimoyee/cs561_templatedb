@@ -258,6 +258,7 @@ void LSM<K,V>::rangeQuery(K minkey, K maxkey){
 
         for(int i=0; i<tempEntry1.value.size(); i++){
             std::cout<<tempEntry1.value[i]<<std::endl;
+            //tempEntry1.key >= minkey && tempEntry1.key <=maxkey
             //std::cout<<"HERE5"<<std::endl;
         }
 
@@ -277,25 +278,44 @@ void LSM<K,V>::rangeQuery(K minkey, K maxkey){
         if(idx1[0]==-1 && (idx1[1]+1)<memTemp.size()){
             std::cout<<"If1"<<std::endl;
             idx1[1]=idx1[1]+1;
-            pq.push(make_pair(memTemp[idx1[1]], idx1));
+            if(memTemp[idx1[1]].key >=minkey && memTemp[idx1[1]].key<=maxkey){
+                pq.push(make_pair(memTemp[idx1[1]], idx1));
+            }
+
+            
         }
         else if((idx1[3]+1)<this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data.size()){
             idx1[3]= idx1[3]+1;
             std::cout<<"If2"<<std::endl;
-            pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+            Entry<K,V> temp3= levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]];
+            if(temp3.key >=minkey && temp3.key <=maxkey){
+                pq.push(make_pair(temp3, idx1));
+                //pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+            }
+            
         }
         else if((idx1[3]+1)==this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data.size()){
             idx1[2]= idx1[2]+1;
             idx1[3]=0;
             std::cout<<"If3"<<std::endl;
-            pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+            Entry<K,V> temp4= levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]];
+            if(temp4.key >=minkey && temp4.key <=maxkey){
+                pq.push(make_pair(temp4, idx1));
+                //pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+            }
+            //pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
         }
         else if((idx1[2]+1)==this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector.size()){
             idx1[1]= idx1[1]+1;
             idx1[2]=0;
             idx1[3]=0;
             std::cout<<"If4"<<std::endl;
-            pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+            Entry<K,V> temp5= levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]];
+            if(temp5.key >=minkey && temp5.key <=maxkey){
+                pq.push(make_pair(temp5, idx1));
+                //pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+            }
+            //pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
         }
         else if((idx1[1]+1)==this->levels[idx1[0]].get_sst_vector().size()){
             idx1[0]= idx1[0]+1;
@@ -303,7 +323,12 @@ void LSM<K,V>::rangeQuery(K minkey, K maxkey){
             idx1[2]=0;
             idx1[3]=0;
             std::cout<<"If5"<<std::endl;
-            pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+            Entry<K,V> temp6= levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]];
+            if(temp6.key >=minkey && temp6.key <=maxkey){
+                pq.push(make_pair(temp6, idx1));
+                //pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+            }
+            //pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
         }
         else if((idx1[0])==this->levels.size()){
             std::cout<<"If6"<<std::endl;

@@ -97,7 +97,7 @@ int main()
     LeveledLSM.pointQuery("2", tempVal, flag);
     //LeveledLSM.deleteQuery("602");
     //LeveledLSM.pointQuery("602", tempVal, flag);
-    LeveledLSM.rangeQuery("601", "609");
+    LeveledLSM.rangeQuery("2", "3");
     //LeveledLSM.deleteRangeQuery("601", "609");
     if(flag)
     {
