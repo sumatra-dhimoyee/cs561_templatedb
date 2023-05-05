@@ -47,11 +47,11 @@ void LSM<K,V>::create_sst(std::vector<Entry<K,V>> entries)
             if(i < this->levels.size())
             {
                 // std::cout<<"_______ADDING _1_____________"<<std::endl;
-                x = levels[i].add_sst(sst, this->leveled, fp, bf);
+                x = levels[i].add_sst(sst, this->leveled, fp, bf, this->levels.size());
                 if(!x)
                 {
                     
-                    sst = levels[i].merge_runs(fp, bf);
+                    sst = levels[i].merge_runs(fp, bf, this->levels.size());
                     levels[i].clear();
                     _level_size = _level_size*this->T_ratio;
                     if(leveled)
@@ -203,16 +203,115 @@ void LSM<K,V>::deleteQuery(K key){
 
 }
 
+template<typename K, typename V>
+struct compare {
+	bool operator()(
+		pair<Entry<K,V>, vector<int>> a, pair<Entry<K,V>, vector<int>> b) {
+            Entry<K,V>& entry_a= a.first;
+            Entry<K,V>& entry_b= b.first;
+		return entry_a.key > entry_b.key;
+	}
+};
 
 template<typename K, typename V>
-std::vector<V> LSM<K,V>::rangeQuery(K minkey, K maxkey){
+void LSM<K,V>::rangeQuery(K minkey, K maxkey){
     //if maxkey is less than memcache 0
-    
+    std::vector<Entry<K,V>> memTemp;
+    for(Entry<K,V>& entry: this->memcache->getMemcache()){
+        if(entry.key>=minkey && entry.key<=maxkey){
+            memTemp.push_back(entry);
+        }
+    }
+    priority_queue<pair<Entry<K,V>, vector<int>>, vector<pair<Entry<K,V>, vector<int>>>, compare<K,V>> pq; 
+
+    std::vector<int> vectorMem(4,0);
+    pq.push(make_pair(memTemp[0], vectorMem));
+
+    // Insert the first element of each array into the heap 
+    for (int i = 0; i < this->levels.size(); i++) { 
+        std::vector<int> idx(4, 0);
+        idx[0]= i+1;
+        Entry<K,V> tempEntry = this->levels[i].get_sst_vector()[0].block_vector[0].data[0];
+        pq.push(make_pair(tempEntry, idx));
+        //pq.push(make_pair(arr[i][0], make_pair(i, 0))); 
+    } 
+
+    // Merge the arrays 
+    while (!pq.empty()) { 
+        pair<Entry<K,V>, vector<int>> curr = pq.top(); 
+        pq.pop(); 
+
+        Entry<K,V> tempEntry1 = curr.first; 
+        std::vector<int> idx1 = curr.second; 
+
+        for(int i=0; i<tempEntry1.value.size(); i++){
+            std::cout<<tempEntry1.value[i]<<std::endl;
+        }
+
+
+ 
+        //std::cout<<"SIZE OF "<<i<<" "<<temp_size<<std::endl;
+        //result.push_back(); 
+
+        // If the current element is not the last element of the array, 
+        // push the next element of the array into the heap 
+        if(idx1[0]==0 && idx1[1]+1<memTemp.size()){
+            idx1[1]=idx1[1]+1;
+            pq.push(make_pair(memTemp[idx1[1]], idx1));
+        }
+        else if((idx1[3]+1)<this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data.size()){
+            idx1[3]= idx1[3]+1;
+
+            pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+        }
+        else if((idx1[3]+1)==this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data.size()){
+            idx1[2]= idx1[2]+1;
+            idx1[3]=0;
+            pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+        }
+        else if((idx1[2]+1)==this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector.size()){
+            idx1[1]= idx1[1]+1;
+            idx1[2]=0;
+            idx1[3]=0;
+            pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+        }
+        else if((idx1[1]+1)==this->levels[idx1[0]].get_sst_vector().size()){
+            idx1[0]= idx1[0]+1;
+            idx1[1]=0;
+            idx1[2]=0;
+            idx1[3]=0;
+            pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
+        }
+        // else if((idx1[0])==this->levels.size()){
+        //     break;
+        // }
+    } 
+
+
 
 }
 
 template<typename K, typename V>
-bool LSM<K,V>::deleteRangeQuery(K minkey, K maxkey){
-
+void LSM<K,V>::deleteRangeQuery(K minkey, K maxkey){
+    for(Entry<K,V>& entry: this->memcache->getMemcache()){
+        if(entry.key>=minkey && entry.key<=maxkey){
+            this->memcache->deleteEntry(entry.key);
+        }
+    }
+    for(int i=0; i<this->levels.size(); i++){
+        std::vector<SST<K,V>> sstVector=this->levels[i].get_sst_vector();
+        for(int j=0; j<sstVector.size(); j++){
+            std::vector<Block<K,V>> blockVector = sstVector[j];
+            for(int k=0; k<blockVector.size(); k++){
+                K blockmin = blockVector[k].block_min();
+                K blockmax = blockVector[k].block_max();
+                if(blockmin>=minkey && blockmin<=maxkey && blockmax<=maxkey && blockmax>=minkey){
+                    for(K m=blockmin; m<=blockmax; m++){
+                        this->deleteQuery(m);
+                    }
+                }
+            }
+        }
+    }
 }
 

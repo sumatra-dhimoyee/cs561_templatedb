@@ -42,7 +42,7 @@ Build_SST<K,V> ::Build_SST(std::vector<Entry<K,V>> _data, size_t _max_size, uint
 }
 
 template<typename K, typename V>
-std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::vector<Block<K,V>>& B2)
+std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::vector<Block<K,V>>& B2, std::vector<zone<K>>& fp, BF::BloomFilter& bf, uint8_t first_sst_level, uint8_t second_sst_level, u_int8_t no_levels)
 {
     std::vector<Entry<K,V>> merged_vector;
     int vec_i = 0, vec_j = 0, i = 0, j = 0;
@@ -54,13 +54,24 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
         {
             if(B1[i].data[vec_i].key < B2[j].data[vec_j].key )
             {
-               
-                merged_vector.push_back(B1[i].data[vec_i]);
+                if(first_sst_level<no_levels){
+                    merged_vector.push_back(B1[i].data[vec_i]);
+                }else{
+                    if(!B1[i].data[vec_i].tomb){
+                        merged_vector.push_back(B1[i].data[vec_i]);
+                    }
+                }
                 vec_i++;
             }
             else if (B1[i].data[vec_i].key > B2[j].data[vec_j].key)
             {
-                merged_vector.push_back(B2[j].data[vec_j]);
+                if(second_sst_level<no_levels-1){
+                    merged_vector.push_back(B2[j].data[vec_j]);
+                }else{
+                    if(!B2[j].data[vec_j].tomb){
+                        merged_vector.push_back(B2[j].data[vec_j]);
+                    }
+                }
                 vec_j++;
                 
             }
@@ -79,10 +90,21 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
                 // {
                     // std::cout<<"KEY 1: "<<B1[i].data[vec_i].key<<" KEY 2: "<<B2[j].data[vec_j].key<<std::endl;
                     // std::cout<<"I AM HERE"<<std::endl;
+
+                if(second_sst_level<no_levels-1){
                     merged_vector.push_back(B2[j].data[vec_j]);
-                    vec_i++;
-                    vec_j++;
-                // }
+                }else{
+                    if(!B2[j].data[vec_j].tomb){
+                        merged_vector.push_back(B2[j].data[vec_j]);
+                    }
+                }
+                vec_i++;
+                vec_j++;
+                    
+                    // merged_vector.push_back(B2[j].data[vec_j]);
+                    // vec_i++;
+                    // vec_j++;
+
             }
 
         }
@@ -104,7 +126,24 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
     {
         for(int k = i; k < B1.size(); k++)
         {
-            merged_vector.insert(merged_vector.end(), B1[k].data.begin() + vec_i, B1[k].data.end());
+            if(first_sst_level<no_levels-1){
+                merged_vector.push_back(B1[k].data[vec_i]);
+            }else{
+                if(!B1[k].data[vec_i].tomb){
+                    merged_vector.push_back(B1[k].data[vec_i]);
+                }
+            }
+            // for(int m = 0; m<B1[k].data.size(); m++){
+            //     if(this->level<no_levels){
+            //         merged_vector.push_back(B1[k].data[m]);
+            //     }else{
+            //         if(!B1[k].data[m].tomb){
+            //             merged_vector.push_back(B1[k].data[m]);
+            //         }
+            //     }
+            // }
+
+            //merged_vector.insert(merged_vector.end(), B1[k].data.begin() + vec_i, B1[k].data.end());
             vec_i = 0;  
         }
     }
@@ -112,7 +151,23 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
     {
         for(int k = j; k < B2.size(); k++)
         {
-            merged_vector.insert(merged_vector.end(), B2[k].data.begin() + vec_j, B2[k].data.end());
+            if(second_sst_level<no_levels-1){
+                merged_vector.push_back(B2[k].data[vec_j]);
+            }else{
+                if(!B2[k].data[vec_j].tomb){
+                    merged_vector.push_back(B2[k].data[vec_j]);
+                }
+            }
+            // for(int m = 0; m<B2[k].data.size(); m++){
+            //     if(this->level<no_levels){
+            //         merged_vector.push_back(B2[k].data[m]);
+            //     }else{
+            //         if(!B2[k].data[m].tomb){
+            //             merged_vector.push_back(B2[k].data[m]);
+            //         }
+            //     }
+            // }
+            //merged_vector.insert(merged_vector.end(), B2[k].data.begin() + vec_j, B2[k].data.end());
             vec_j = 0;  
         }
     }
@@ -121,10 +176,10 @@ std::vector<Entry<K,V>> merge_sorted_vectors(std::vector<Block<K,V>>& B1, std::v
 }
 
 template<typename K, typename V>
-SST<K,V> Build_SST<K,V>::merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst, std::vector<zone<K>>& fp, BF::BloomFilter& bf)
+SST<K,V> Build_SST<K,V>::merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst, std::vector<zone<K>>& fp, BF::BloomFilter& bf, u_int8_t no_levels)
 {
     fp.clear();
-    std::vector<Entry<K,V>> merged_entries = merge_sorted_vectors(first_sst.block_vector, second_sst.block_vector);
+    std::vector<Entry<K,V>> merged_entries = merge_sorted_vectors(first_sst.block_vector, second_sst.block_vector, fp, bf, first_sst.level, second_sst.level, no_levels);
     Build_SST<K,V> sst_builder = Build_SST(merged_entries, first_sst.max_size,  first_sst.level, fp, bf, false);
     SST<K,V> sst = sst_builder.build();
     

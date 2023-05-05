@@ -47,23 +47,24 @@ int main()
     std::vector<Entry<int,string>> entries_12= generate_vector<int,string>(2200,2363);
 
 // ----------------------------test leveled lsm -------------------------------------
-/*
+
     templatedb::LSM<int,int> LeveledLSM = templatedb::LSM<int,int>(4*1024, 3, true, 1000, 10);
     LeveledLSM.create_sst(entries_1);
-    LeveledLSM.create_sst(entries_2);
-    LeveledLSM.create_sst(entries_3);
-    LeveledLSM.create_sst(entries_4);
-    LeveledLSM.create_sst(entries_5);
-    LeveledLSM.create_sst(entries_6);
-    LeveledLSM.create_sst(entries_7);
-    LeveledLSM.create_sst(entries_8);
-    LeveledLSM.create_sst(entries_9);
-    LeveledLSM.create_sst(entries_10);
-    LeveledLSM.create_sst(entries_11);
-    LeveledLSM.create_sst(entries_12);
+    // LeveledLSM.create_sst(entries_2);
+    // LeveledLSM.create_sst(entries_3);
+    // LeveledLSM.create_sst(entries_4);
+    // LeveledLSM.create_sst(entries_5);
+    // LeveledLSM.create_sst(entries_6);
+    // LeveledLSM.create_sst(entries_7);
+    // LeveledLSM.create_sst(entries_8);
+    // LeveledLSM.create_sst(entries_9);
+    // LeveledLSM.create_sst(entries_10);
+    // LeveledLSM.create_sst(entries_11);
+    // LeveledLSM.create_sst(entries_12);
+    
     
   
-*/
+
 
 // -----------------------------test tiered lsm --------------------------------------
 

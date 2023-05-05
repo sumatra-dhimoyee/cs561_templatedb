@@ -94,7 +94,8 @@ int main()
     // std::cout<<"HERE"<<std::endl;
     // LeveledLSM.deleteQuery("405");
     // std::cout<<"HERE1"<<std::endl;
-    LeveledLSM.pointQuery("405", tempVal, flag);
+    LeveledLSM.pointQuery("2", tempVal, flag);
+    LeveledLSM.rangeQuery("601", "609");
     if(flag)
     {
         for(int i=0; i<tempVal.size(); i++){
@@ -107,7 +108,7 @@ int main()
 
 // // -----------------------------test tiered lsm --------------------------------------
 
-// templatedb::LSM<int,int> TieredLSM = templatedb::LSM<int,int>(4*1024, 3, false, 1000, 10);
+//  templatedb::LSM<int,int> TieredLSM = templatedb::LSM<int,int>(4*1024, 3, false, 1000, 10);
 
 //     TieredLSM.create_sst(entries_1);
 //     TieredLSM.create_sst(entries_2);

@@ -23,7 +23,7 @@ Level<K,V> :: Level(SST<K,V> sst, int _no_runs, size_t _level_size, uint8_t leve
 }
 
 template<typename K, typename V>
-bool Level<K,V> ::add_sst(SST<K,V> sst, bool leveled, std::vector<zone<K>>& fp, BF::BloomFilter& bf)
+bool Level<K,V> ::add_sst(SST<K,V> sst, bool leveled, std::vector<zone<K>>& fp, BF::BloomFilter& bf, u_int8_t no_levels)
 {
     // Build_SST<K,V> sst_builder = Build_SST<K,V>(entry_vector, this->run_size,  this->level);
     // SST<K,V> sst = sst_builder.build();
@@ -40,7 +40,7 @@ bool Level<K,V> ::add_sst(SST<K,V> sst, bool leveled, std::vector<zone<K>>& fp, 
     if(leveled)
     {
         
-        SST<K,V> merged_sst = Build_SST<K,V>::merge_sst(this->sst_vector[0], sst, fp, bf);
+        SST<K,V> merged_sst = Build_SST<K,V>::merge_sst(this->sst_vector[0], sst, fp, bf, no_levels);
         // std::cout<<"SST SIZE "<< merged_sst.offset<<" SST MAX SIZE "<<merged_sst.max_size<<std::endl;
         // std::cout<<merged_sst.overflow<<std::endl;
         this->clear();
@@ -83,7 +83,7 @@ bool Level<K,V> ::add_sst(SST<K,V> sst, bool leveled, std::vector<zone<K>>& fp, 
 }
 
 template<typename K, typename V>
-SST<K,V> Level<K,V>::merge_runs(std::vector<zone<K>>& fp, BF::BloomFilter& bf)
+SST<K,V> Level<K,V>::merge_runs(std::vector<zone<K>>& fp, BF::BloomFilter& bf, u_int8_t no_levels)
 {
     
     int i = this->sst_vector.size() -1;
@@ -91,7 +91,7 @@ SST<K,V> Level<K,V>::merge_runs(std::vector<zone<K>>& fp, BF::BloomFilter& bf)
     while(i-1 >= 0)
     {
         // std::cout<<"LEVELLLL"<<std::endl;
-    SST<K,V> sst = Build_SST<K,V>::merge_sst(this->sst_vector[i-1], merged_sst, fp, bf);
+    SST<K,V> sst = Build_SST<K,V>::merge_sst(this->sst_vector[i-1], merged_sst, fp, bf, no_levels);
     merged_sst = sst;
     i--;
     

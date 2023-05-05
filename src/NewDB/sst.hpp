@@ -51,7 +51,7 @@ namespace templatedb
         public:
         Build_SST(std::vector<Entry<K,V>> _data,size_t _max_size, uint8_t _level,std::vector<zone<K>>& fp, BF::BloomFilter& bf, bool _overflow = false );
         // bool add_KV_list(std::vector<K>& keys, std::vector<std::vector<V> values);
-        static SST<K,V> merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst, std::vector<zone<K>>& fp, BF::BloomFilter& bf);
+        static SST<K,V> merge_sst(SST<K,V>& first_sst, SST<K,V>& second_sst, std::vector<zone<K>>& fp, BF::BloomFilter& bf, u_int8_t no_levels);
         
         // void print_sst();
         SST<K,V> build();

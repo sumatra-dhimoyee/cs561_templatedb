@@ -11,6 +11,7 @@
 #include "level.hpp"
 #include "memcache.hpp"
 #include <cmath>
+#include <queue>
 
 namespace templatedb
 {
@@ -48,8 +49,8 @@ namespace templatedb
         void update(K key, std::vector<V> value);
         void pointQuery(K key, std::vector<V>& result,bool& flag);
         void deleteQuery(K key);
-        std::vector<V> rangeQuery(K minkey, K maxkey);
-        bool deleteRangeQuery(K minkey, K maxkey);
+        void rangeQuery(K minkey, K maxkey);
+        void deleteRangeQuery(K minkey, K maxkey);
         
         
 
