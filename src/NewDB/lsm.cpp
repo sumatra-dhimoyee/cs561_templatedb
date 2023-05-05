@@ -216,21 +216,29 @@ struct compare {
 template<typename K, typename V>
 void LSM<K,V>::rangeQuery(K minkey, K maxkey){
     //if maxkey is less than memcache 0
+    std::cout<<"HERE1"<<std::endl;
     std::vector<Entry<K,V>> memTemp;
     for(Entry<K,V>& entry: this->memcache->getMemcache()){
-        if(entry.key>=minkey && entry.key<=maxkey){
+        if(entry.key>=minkey || entry.key<=maxkey){
+            //std::cout<<"AWW3"<<std::endl;
             memTemp.push_back(entry);
         }
     }
     priority_queue<pair<Entry<K,V>, vector<int>>, vector<pair<Entry<K,V>, vector<int>>>, compare<K,V>> pq; 
 
-    std::vector<int> vectorMem(4,0);
+    //std::cout<<"HERE2"<<std::endl;
+    std::vector<int> vectorMem= {0, 0, 0, 0};
+    //std::cout<<"AWW1"<<std::endl;
     pq.push(make_pair(memTemp[0], vectorMem));
 
     // Insert the first element of each array into the heap 
+    //std::cout<<"AWW"<<std::endl;
+    std::cout<<"Level: "<< this->levels.size() <<std::endl;
     for (int i = 0; i < this->levels.size(); i++) { 
-        std::vector<int> idx(4, 0);
+        std::vector<int> idx= {0, 0, 0, 0};
         idx[0]= i+1;
+        std::cout<< "idx: " << idx[0]<<std::endl;
+        std::cout<<"HERE3"<<std::endl;
         Entry<K,V> tempEntry = this->levels[i].get_sst_vector()[0].block_vector[0].data[0];
         pq.push(make_pair(tempEntry, idx));
         //pq.push(make_pair(arr[i][0], make_pair(i, 0))); 
@@ -238,6 +246,7 @@ void LSM<K,V>::rangeQuery(K minkey, K maxkey){
 
     // Merge the arrays 
     while (!pq.empty()) { 
+        //std::cout<<"HERE4"<<std::endl;
         pair<Entry<K,V>, vector<int>> curr = pq.top(); 
         pq.pop(); 
 
@@ -246,33 +255,43 @@ void LSM<K,V>::rangeQuery(K minkey, K maxkey){
 
         for(int i=0; i<tempEntry1.value.size(); i++){
             std::cout<<tempEntry1.value[i]<<std::endl;
+            std::cout<<"HERE5"<<std::endl;
         }
 
+        for(int i=0; i<idx1.size(); i++){
+            std::cout<<"idx1: " <<i << idx1[i]<<std::endl;
+        }
 
+        std::cout<<"HERE6"<<std::endl;
  
         //std::cout<<"SIZE OF "<<i<<" "<<temp_size<<std::endl;
         //result.push_back(); 
 
         // If the current element is not the last element of the array, 
         // push the next element of the array into the heap 
-        if(idx1[0]==0 && idx1[1]+1<memTemp.size()){
+        //std::cout<<this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data.size()<<std::endl;
+        std::cout<<"HERE7"<<std::endl;
+        if(idx1[0]==0 && (idx1[1])+1<memTemp.size()){
+            std::cout<<"If1"<<std::endl;
             idx1[1]=idx1[1]+1;
             pq.push(make_pair(memTemp[idx1[1]], idx1));
         }
         else if((idx1[3]+1)<this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data.size()){
             idx1[3]= idx1[3]+1;
-
+            std::cout<<"If2"<<std::endl;
             pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
         }
         else if((idx1[3]+1)==this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data.size()){
             idx1[2]= idx1[2]+1;
             idx1[3]=0;
+            std::cout<<"If3"<<std::endl;
             pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
         }
         else if((idx1[2]+1)==this->levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector.size()){
             idx1[1]= idx1[1]+1;
             idx1[2]=0;
             idx1[3]=0;
+            std::cout<<"If4"<<std::endl;
             pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
         }
         else if((idx1[1]+1)==this->levels[idx1[0]].get_sst_vector().size()){
@@ -280,11 +299,13 @@ void LSM<K,V>::rangeQuery(K minkey, K maxkey){
             idx1[1]=0;
             idx1[2]=0;
             idx1[3]=0;
+            std::cout<<"If5"<<std::endl;
             pq.push(make_pair(levels[idx1[0]].get_sst_vector()[idx1[1]].block_vector[idx1[2]].data[idx1[3]], idx1));
         }
-        // else if((idx1[0])==this->levels.size()){
-        //     break;
-        // }
+        else if((idx1[0])==this->levels.size()){
+            std::cout<<"If6"<<std::endl;
+            break;
+        }
     } 
 
 
