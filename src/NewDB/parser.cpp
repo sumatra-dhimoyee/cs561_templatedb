@@ -23,13 +23,13 @@ using namespace std;
 int main() {
 
     size_t mem_size = 12*1024;
-    uint8_t T_ratio = 10;
+    uint8_t T_ratio = 8;
     int bf_num_elem = 1024;
     int bf_num_bits_per_elem = 10;
     bool leveled = true ;
     templatedb::LSM<string,string> LeveledLSM = templatedb::LSM<string,string>(mem_size, T_ratio, leveled, bf_num_elem, bf_num_bits_per_elem);
     // Open the input file
-    ifstream infile("workload.txt");
+    ifstream infile("point_query.txt");
 
     // Create a hash table to store the key-value pairs
     
@@ -66,6 +66,7 @@ int main() {
 
                 break;
             case 'U':
+                LeveledLSM.update(key, value);
                 // cout<<op<< " "<<key<<" "<< value<<endl;
                 
                 break;
